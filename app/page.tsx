@@ -134,7 +134,7 @@ export default function Home() {
         // Cuando la parte inferior del hero llega al top, empieza la transición
         const start = heroRect.height * 0.4; // puedes ajustar el 0.4 para el punto de inicio
         const end = techRect.top;
-        let progress = 1 - Math.max(0, Math.min(1, end / start));
+        const progress = 1 - Math.max(0, Math.min(1, end / start));
         setScrollProgress(progress);
       }
     };
