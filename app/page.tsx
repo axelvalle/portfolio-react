@@ -229,7 +229,7 @@ export default function Home() {
             <div className="relative mt-6 md:mt-0 w-[220px] h-[320px] xs:w-[260px] xs:h-[380px] sm:w-[300px] sm:h-[420px] md:w-[360px] md:h-[520px] flex-shrink-0 animate-float">
               <div className="absolute inset-0 bg-gradient-to-t from-[#FF8C1A]/40 to-transparent rounded-full blur-2xl z-0"></div>
               <Image
-                src="/character.png"
+                src="/character.webp"
                 alt="Axel Cartoon"
                 fill
                 className="z-10 object-contain drop-shadow-[0_5px_25px_rgba(255,140,26,0.5)]"
@@ -446,7 +446,7 @@ export default function Home() {
             <div className="flex flex-1 justify-center md:justify-end items-end mt-8 md:mt-0 animate-zoom-bounce">
               <div className="relative w-[260px] h-[420px] xs:w-[320px] xs:h-[520px] sm:w-[380px] sm:h-[600px]">
                 <Image
-                  src="/character2.png"
+                  src="/character2.webp"
                   alt="Character 2"
                   fill
                   className="object-contain drop-shadow-[0_5px_25px_rgba(255,140,26,0.5)]"
