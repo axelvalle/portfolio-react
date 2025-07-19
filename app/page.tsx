@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel } from "react-icons/si";
 import { FaReact, FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
 import { FaUniversity, FaCertificate } from "react-icons/fa";
+import { MdOutlineHive } from "react-icons/md";
 
 
 function useSectionFadeIn(ids: string[]) {
@@ -287,7 +288,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
               {/* Project 1 */}
               <div id="project-card-0" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[0] ? ' visible' : ''}`}>
-                <FaReact size={48} className="text-[#61dafb] mb-4" />
+                <MdOutlineHive size={48} className="text-[#FFB300] mb-4" />
                 <h3 className="text-xl font-bold text-white mb-1 text-center">“Flor Miel de Abeja”</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">A web platform for a honey business, with company info and product catalog.</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
