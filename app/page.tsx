@@ -123,6 +123,13 @@ export default function Home() {
   const socialCardsVisible = useFadeInOnScroll(4, 'social');
   const [lang, setLang] = useState<'en' | 'es'>('en');
   const t = translations[lang];
+  const [navbarVisible, setNavbarVisible] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setNavbarVisible(true), 100);
+    setTimeout(() => setHeroVisible(true), 400);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -167,7 +174,8 @@ export default function Home() {
           backgroundPosition: 'center',
         }}>
           {/* Navbar */}
-          <div className="w-full max-w-7xl mx-auto flex items-center justify-between py-4 sm:py-6">
+          <div className={`w-full max-w-7xl mx-auto flex items-center justify-between py-4 sm:py-6 transition-all duration-700 ${navbarVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'}`}
+            style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
             <button
               className="bg-[#23272f] text-white px-3 py-1 rounded-lg font-bold hover:bg-[#FF8C1A] hover:text-black transition"
               onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
@@ -212,21 +220,24 @@ export default function Home() {
           <section
             id="hero"
             ref={heroRef}
-            className="z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-7xl mt-[-1.5rem] md:mt-2 gap-8 md:gap-0"
+            className={`z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-7xl mt-[-1.5rem] md:mt-2 gap-8 md:gap-0 transition-all duration-700 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}
           >
             {/* Text Side */}
-            <div className="flex flex-col items-center justify-center w-full md:max-w-xl text-center mt-0 md:mt-0">
-              <h1 className="montserrat-title text-5xl xs:text-6xl sm:text-7xl md:text-8xl font-extrabold leading-[1.05] tracking-tight md:leading-[1.08] md:tracking-tight mb-2" style={{letterSpacing: '-0.02em'}}>
+            <div className={`flex flex-col items-center justify-center w-full md:max-w-xl text-center mt-0 md:mt-0 transition-all duration-700 ${heroVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+              style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
+              <h1 className="montserrat-title text-5xl xs:text-6xl sm:text-7xl md:text-8xl font-extrabold leading-[1.05] tracking-tight md:leading-[1.08] md:tracking-tight mb-2 animate-fade-float" style={{letterSpacing: '-0.02em'}}>
                 <span className="block text-[#FF8C1A] drop-shadow-[0_2px_10px_#FF8C1A88]">{t.heroTitle1}</span>
                 <span className="block text-[#FFE7B0] text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-bold mt-1">{t.heroTitle2}</span>
               </h1>
-              <p className="mt-3 sm:mt-5 text-base xs:text-lg sm:text-xl text-[#DCDCDC] max-w-xs sm:max-w-lg mx-auto font-medium">
+              <p className="mt-3 sm:mt-5 text-base xs:text-lg sm:text-xl text-[#DCDCDC] max-w-xs sm:max-w-lg mx-auto font-medium animate-fade-float">
                 {t.heroDesc}
               </p>
             </div>
 
             {/* Character Image */}
-            <div className="relative mt-6 md:mt-0 w-[220px] h-[320px] xs:w-[260px] xs:h-[380px] sm:w-[300px] sm:h-[420px] md:w-[360px] md:h-[520px] flex-shrink-0 animate-float">
+            <div className={`relative mt-6 md:mt-0 w-[220px] h-[320px] xs:w-[260px] xs:h-[380px] sm:w-[300px] sm:h-[420px] md:w-[360px] md:h-[520px] flex-shrink-0 animate-zoom-bounce transition-all duration-700 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
+              style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
               <div className="absolute inset-0 bg-gradient-to-t from-[#FF8C1A]/40 to-transparent rounded-full blur-2xl z-0"></div>
               <Image
                 src="/character.webp"
