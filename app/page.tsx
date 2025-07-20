@@ -3,8 +3,8 @@
 import Image from "next/image";
 import BinaryRain from "./components/BinaryRain";
 import { useState, useEffect, useRef } from "react";
-import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel } from "react-icons/si";
-import { FaReact, FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
+import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel, SiNetlify } from "react-icons/si";
+import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
 import { FaUniversity, FaCertificate } from "react-icons/fa";
 import { MdOutlineHive } from "react-icons/md";
 
@@ -267,7 +267,7 @@ export default function Home() {
                   <div id="techicon-card-8" className={`col-span-1 flex justify-center fade-up${techIconsVisible[8] ? ' visible' : ''}`}><SiMysql size={60} color="#4479a1" /></div>
                   <div id="techicon-card-9" className={`col-span-1 flex justify-center fade-up${techIconsVisible[9] ? ' visible' : ''}`}><SiPython size={60} color="#3776ab" /></div>
                   <div id="techicon-card-10" className={`col-span-1 flex justify-center fade-up${techIconsVisible[10] ? ' visible' : ''}`}><SiPostgresql size={60} color="#336791" /></div>
-                  <div id="techicon-card-11" className={`col-span-1 flex justify-center fade-up${techIconsVisible[11] ? ' visible' : ''}`}><SiVercel size={60} color="#47a248" /></div>
+                  <div id="techicon-card-11" className={`col-span-1 flex justify-center fade-up${techIconsVisible[11] ? ' visible' : ''}`}><SiNetlify size={60} color="#00C7B7" /></div>
                 </div>
               </div>
               <div className="w-full flex justify-center mt-8 sm:mt-12">
