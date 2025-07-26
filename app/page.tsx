@@ -149,7 +149,7 @@ export default function Home() {
   // Se utiliza el hook `useSectionFadeIn` para la sección de tecnologías.
   const [techVisible] = useSectionFadeIn(['technologies']);
   // Se utiliza `useFadeInOnScroll` para animar la aparición de elementos en varias secciones.
-  const projectCardsVisible = useFadeInOnScroll(3, 'project');
+  const projectCardsVisible = useFadeInOnScroll(4, 'project');
   const techIconsVisible = useFadeInOnScroll(12, 'techicon');
   const socialCardsVisible = useFadeInOnScroll(4, 'social');
   // Estado para el idioma actual (inglés o español)
@@ -359,20 +359,19 @@ export default function Home() {
             </div>
             {/* La visibilidad de las tarjetas de proyecto es controlada por el hook `useFadeInOnScroll`. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
-              {/* Project 1 */}
+              {/* Project 1 - FINALWIMAX */}
               <div id="project-card-0" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[0] ? ' visible' : ''}`}>
-                <MdOutlineHive size={48} className="text-[#FFB300] mb-4" />
-                <h3 className="text-xl font-bold text-white mb-1 text-center">“Flor Miel de Abeja”</h3>
-                <p className="text-[#DCDCDC] text-center mb-3">A web platform for a honey business, with company info and product catalog.</p>
+                <FaMobileAlt size={48} className="text-[#25c6f9] mb-4" />
+                <h3 className="text-xl font-bold text-white mb-1 text-center">“FINALWIMAX”</h3>
+                <p className="text-[#DCDCDC] text-center mb-3">Sistema de gestión de clientes y facturación para empresa de internet inalámbrico.</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  <span className="bg-[#e34c26] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiHtml5 size={16}/>HTML</span>
-                  <span className="bg-[#1572b6] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiCss3 size={16}/>CSS</span>
-                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiTypescript size={16}/>TS</span>
-                  <span className="bg-[#dd0031] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiAngular size={16}/>Angular</span>
+                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Java</span>
+                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">Swing</span>
+                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">SQL Server</span>
                 </div>
-                <a href="#" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition">{t.liveDemo}</a>
+                <a href="https://github.com/axelvalle/FINALWIMAX" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
               </div>
-              {/* Project 2 */}
+              {/* Project 2 - StockFlow Mama Pola */}
               <div id="project-card-1" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[1] ? ' visible' : ''}`}>
                 <FaMobileAlt size={48} className="text-[#25c6f9] mb-4" />
                 <h3 className="text-xl font-bold text-white mb-1 text-center">“StockFlow Mama Pola”</h3>
@@ -381,20 +380,32 @@ export default function Home() {
                   <span className="bg-[#02569b] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiFlutter size={16}/>Flutter</span>
                   <span className="bg-[#0175c2] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiDart size={16}/>Dart</span>
                 </div>
-                <a href="https://github.com/axelvalle/stockflow-mama-pola" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition">Github Repo</a>
+                <a href="https://github.com/axelvalle/stockflow-mama-pola" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
               </div>
-              {/* Project 3 */}
-              <div id="project-card-2" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[2] ? ' visible' : ''}`}>
-                <FaPaintBrush size={48} className="text-[#FF8C1A] mb-4" />
+              {/* Project 3 - Yaleli Creations (Coming Soon) */}
+              <div id="project-card-2" className={`bg-gradient-to-br from-[#FF8C1A]/80 to-[#23272f]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[2] ? ' visible' : ''} animate-pulse`}>
+                <FaPaintBrush size={48} className="text-[#FF8C1A] mb-4 animate-bounce" />
                 <h3 className="text-xl font-bold text-white mb-1 text-center">“Yaleli Creations”</h3>
-                <p className="text-[#DCDCDC] text-center mb-3">A creative portfolio for an artist, with gallery and contact form.</p>
+                <p className="text-[#FFE7B0] text-center mb-3 font-semibold text-lg">Coming soon...</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
                   <span className="bg-[#e34c26] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiHtml5 size={16}/>HTML</span>
                   <span className="bg-[#1572b6] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiCss3 size={16}/>CSS</span>
                   <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiTypescript size={16}/>TS</span>
                   <span className="bg-[#dd0031] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiAngular size={16}/>Angular</span>
                 </div>
-                <a href="#" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition">{t.liveDemo}</a>
+                <span className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 opacity-60 cursor-not-allowed"><FaGithub className="text-xl" />Github Repo</span>
+              </div>
+              {/* Project 4 - Administración de Empresas */}
+              <div id="project-card-3" className="bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up visible">
+                <FaUniversity size={48} className="text-[#3178c6] mb-4" />
+                <h3 className="text-xl font-bold text-white mb-1 text-center">“Administración de Empresas”</h3>
+                <p className="text-[#DCDCDC] text-center mb-3">Aplicación de escritorio en Java para la gestión administrativa de empresas: productos, proveedores y planillas de empleados.</p>
+                <div className="flex flex-wrap gap-2 justify-center mb-4">
+                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Java</span>
+                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">Swing</span>
+                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Archivos de texto</span>
+                </div>
+                <a href="https://github.com/axelvalle/Administracion_Empresas" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
               </div>
             </div>
           </section>
