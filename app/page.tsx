@@ -380,9 +380,11 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectWimaxTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectWimaxDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[0]}{t.projectWimaxTech[0]}</span>
-                  <span className="bg-[#178600] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[1]}{t.projectWimaxTech[1]}</span>
-                  <span className="bg-[#512BD4] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[2]}{t.projectWimaxTech[2]}</span>
+                  {t.projectWimaxTech.map((tech, idx) => (
+                    <span key={tech} className={`bg-[${idx === 0 ? '#23272f' : idx === 1 ? '#178600' : '#512BD4'}] text-white px-2 py-1 rounded text-xs flex items-center gap-1`}>
+                      {t.projectWimaxBadges[idx]}{tech}
+                    </span>
+                  ))}
                 </div>
                 <a href="https://github.com/axelvalle/FINALWIMAX" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
@@ -416,9 +418,11 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectAdmonTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectAdmonDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[0]}{t.projectAdmonTech[0]}</span>
-                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[1]}{t.projectAdmonTech[1]}</span>
-                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[2]}{t.projectAdmonTech[2]}</span>
+                  {t.projectAdmonTech.map((tech, idx) => (
+                    <span key={tech} className={`bg-[${idx === 0 ? '#3178c6' : idx === 1 ? '#FF8C1A' : '#23272f'}] ${idx === 1 ? 'text-black' : 'text-white'} px-2 py-1 rounded text-xs flex items-center gap-1`}>
+                      {t.projectAdmonBadges[idx]}{tech}
+                    </span>
+                  ))}
                 </div>
                 <a href="https://github.com/axelvalle/Administracion_Empresas" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
