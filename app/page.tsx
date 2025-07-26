@@ -381,7 +381,7 @@ export default function Home() {
                   <span className="bg-[#02569b] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiFlutter size={16}/>Flutter</span>
                   <span className="bg-[#0175c2] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiDart size={16}/>Dart</span>
                 </div>
-                <a href="#" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition">{t.liveDemo}</a>
+                <a href="https://github.com/axelvalle/stockflow-mama-pola" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition">Github Repo</a>
               </div>
               {/* Project 3 */}
               <div id="project-card-2" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[2] ? ' visible' : ''}`}>
