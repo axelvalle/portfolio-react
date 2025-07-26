@@ -4,9 +4,7 @@ import Image from "next/image";
 import BinaryRain from "./components/BinaryRain";
 import { useState, useEffect, useRef } from "react";
 import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiNetlify, SiDotnet } from "react-icons/si";
-import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope, FaUniversity, FaCertificate, FaUserMd, FaJava, FaDatabase } from "react-icons/fa";
-import { MdOutlineHive } from "react-icons/md";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope, FaUniversity, FaCertificate, FaUserMd, FaJava, FaDatabase, FaCheckCircle } from "react-icons/fa";
 
 // Animación para el badge "Listo para trabajar" / "Open to Work"
 import './badge-glow.css';
@@ -72,7 +70,6 @@ function useFadeInOnScroll(count: number, prefix: string) {
       }
     }
     return () => observers.forEach(o => o.disconnect());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count, prefix]);
   return visible;
 }
@@ -167,8 +164,6 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   // Estado para controlar la animación de cierre del menú
   const [menuAnimating, setMenuAnimating] = useState(false);
-  // Estado para el progreso del scroll, usado para animaciones entre secciones
-  const [scrollProgress, setScrollProgress] = useState(0); // 0 = hero visible, 1 = tech visible
   // Referencias a las secciones de Hero y Tecnologías para calcular el scroll
   const heroRef = useRef<HTMLElement | null>(null);
   const techRef = useRef<HTMLElement | null>(null);
@@ -199,14 +194,8 @@ export default function Home() {
       const hero = heroRef.current;
       const tech = techRef.current;
       if (hero && tech) {
-        const heroRect = hero.getBoundingClientRect();
-        const techRect = tech.getBoundingClientRect();
-        const windowH = window.innerHeight;
         // Cuando la parte inferior del hero llega al top, empieza la transición
-        const start = heroRect.height * 0.4; // puedes ajustar el 0.4 para el punto de inicio
-        const end = techRect.top;
-        const progress = 1 - Math.max(0, Math.min(1, end / start));
-        setScrollProgress(progress);
+        // (código de animación eliminado porque scrollProgress no se usa)
       }
     };
     window.addEventListener('scroll', handleScroll);
@@ -392,7 +381,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectWimaxTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectWimaxDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  {t.projectWimaxTech.map((tech, idx) => {
+                  {t.projectWimaxTech.map((tech) => {
                     const Icon = tech.icon;
                     return (
                       <span key={tech.name} className={`px-2 py-1 rounded text-xs flex items-center gap-1`} style={{background: tech.color, color: tech.color === '#FF8C1A' ? '#181818' : '#fff'}}>
@@ -433,7 +422,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectAdmonTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectAdmonDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  {t.projectAdmonTech.map((tech, idx) => {
+                  {t.projectAdmonTech.map((tech) => {
                     const Icon = tech.icon;
                     return (
                       <span key={tech.name} className={`px-2 py-1 rounded text-xs flex items-center gap-1`} style={{background: tech.color, color: tech.color === '#FF8C1A' ? '#181818' : '#fff'}}>
