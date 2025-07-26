@@ -3,7 +3,7 @@
 import Image from "next/image";
 import BinaryRain from "./components/BinaryRain";
 import { useState, useEffect, useRef } from "react";
-import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel, SiNetlify, SiDotnet } from "react-icons/si";
+import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiNetlify, SiDotnet } from "react-icons/si";
 import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope, FaUniversity, FaCertificate, FaUserMd, FaJava, FaDatabase } from "react-icons/fa";
 import { MdOutlineHive } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
@@ -105,12 +105,18 @@ const translations = {
     liveDemo: "Github",
     projectWimaxTitle: "WIMAX Medical Center",
     projectWimaxDesc: "Vaccination management system using SQL Server, C# and .NET Framework.",
-    projectWimaxTech: ["SQL Server", "C#", ".NET Framework"],
-    projectWimaxBadges: [<FaDatabase size={16}/>, <SiDotnet size={16}/>, <SiDotnet size={16}/>],
+    projectWimaxTech: [
+      { name: "SQL Server", color: "#23272f", icon: FaDatabase },
+      { name: "C#", color: "#178600", icon: SiDotnet },
+      { name: ".NET Framework", color: "#512BD4", icon: SiDotnet }
+    ],
     projectAdmonTitle: "Business Administration",
     projectAdmonDesc: "Desktop application in Java for business management: products, suppliers and payroll.",
-    projectAdmonTech: ["Java", "Swing", "Text Files"],
-    projectAdmonBadges: [<FaJava size={16}/>, <span className='font-bold'>S</span>, <span className='font-bold'>TXT</span>],
+    projectAdmonTech: [
+      { name: "Java", color: "#3178c6", icon: FaJava },
+      { name: "Swing", color: "#FF8C1A", icon: null },
+      { name: "Text Files", color: "#23272f", icon: null }
+    ],
   },
   es: {
     navbar: ["Proyectos", "Tecnologías", "Redes Sociales"],
@@ -135,12 +141,18 @@ const translations = {
     liveDemo: "Github",
     projectWimaxTitle: "WIMAX Centro Médico",
     projectWimaxDesc: "Sistema de gestión de vacunación usando SQL Server, C# y .NET Framework.",
-    projectWimaxTech: ["SQL Server", "C#", ".NET Framework"],
-    projectWimaxBadges: [<FaDatabase size={16}/>, <SiDotnet size={16}/>, <SiDotnet size={16}/>],
+    projectWimaxTech: [
+      { name: "SQL Server", color: "#23272f", icon: FaDatabase },
+      { name: "C#", color: "#178600", icon: SiDotnet },
+      { name: ".NET Framework", color: "#512BD4", icon: SiDotnet }
+    ],
     projectAdmonTitle: "Administración de Empresas",
     projectAdmonDesc: "Aplicación de escritorio en Java para la gestión administrativa de empresas: productos, proveedores y planillas de empleados.",
-    projectAdmonTech: ["Java", "Swing", "Archivos de texto"],
-    projectAdmonBadges: [<FaJava size={16}/>, <span className='font-bold'>S</span>, <span className='font-bold'>TXT</span>],
+    projectAdmonTech: [
+      { name: "Java", color: "#3178c6", icon: FaJava },
+      { name: "Swing", color: "#FF8C1A", icon: null },
+      { name: "Archivos de texto", color: "#23272f", icon: null }
+    ],
   }
 };
 
@@ -380,11 +392,14 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectWimaxTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectWimaxDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  {t.projectWimaxTech.map((tech, idx) => (
-                    <span key={tech} className={`bg-[${idx === 0 ? '#23272f' : idx === 1 ? '#178600' : '#512BD4'}] text-white px-2 py-1 rounded text-xs flex items-center gap-1`}>
-                      {t.projectWimaxBadges[idx]}{tech}
-                    </span>
-                  ))}
+                  {t.projectWimaxTech.map((tech, idx) => {
+                    const Icon = tech.icon;
+                    return (
+                      <span key={tech.name} className={`px-2 py-1 rounded text-xs flex items-center gap-1`} style={{background: tech.color, color: tech.color === '#FF8C1A' ? '#181818' : '#fff'}}>
+                        {Icon && <Icon size={16} />} {tech.name}
+                      </span>
+                    );
+                  })}
                 </div>
                 <a href="https://github.com/axelvalle/FINALWIMAX" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
@@ -418,11 +433,14 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectAdmonTitle}</h3>
                 <p className="text-[#DCDCDC] text-center mb-3">{t.projectAdmonDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  {t.projectAdmonTech.map((tech, idx) => (
-                    <span key={tech} className={`bg-[${idx === 0 ? '#3178c6' : idx === 1 ? '#FF8C1A' : '#23272f'}] ${idx === 1 ? 'text-black' : 'text-white'} px-2 py-1 rounded text-xs flex items-center gap-1`}>
-                      {t.projectAdmonBadges[idx]}{tech}
-                    </span>
-                  ))}
+                  {t.projectAdmonTech.map((tech, idx) => {
+                    const Icon = tech.icon;
+                    return (
+                      <span key={tech.name} className={`px-2 py-1 rounded text-xs flex items-center gap-1`} style={{background: tech.color, color: tech.color === '#FF8C1A' ? '#181818' : '#fff'}}>
+                        {Icon && <Icon size={16} />} {tech.name}
+                      </span>
+                    );
+                  })}
                 </div>
                 <a href="https://github.com/axelvalle/Administracion_Empresas" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
