@@ -651,7 +651,7 @@ export default function Home() {
               className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[1] ? " visible" : ""}`}
             >
               <FaMobileAlt size={48} className="text-[#25c6f9] mb-4" />
-              <h3 className="text-xl font-bold text-white mb-1 text-center">"StockFlow Mama Pola"</h3>
+              <h3 className="text-xl font-bold text-white mb-1 text-center">&quot;StockFlow Mama Pola&quot;</h3>
               <p className="text-[#DCDCDC] text-center mb-3">
                 Mobile inventory and statistics app for small businesses.
               </p>
@@ -680,7 +680,7 @@ export default function Home() {
               className={`bg-gradient-to-br from-[#FF8C1A]/80 to-[#23272f]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[2] ? " visible" : ""} animate-pulse`}
             >
               <FaPaintBrush size={48} className="text-[#FF8C1A] mb-4 animate-bounce" />
-              <h3 className="text-xl font-bold text-white mb-1 text-center">"Yaleli Creations"</h3>
+              <h3 className="text-xl font-bold text-white mb-1 text-center">&quot;Yaleli Creations&quot;</h3>
               <p className="text-[#FFE7B0] text-center mb-3 font-semibold text-lg">Coming soon...</p>
               <div className="flex flex-wrap gap-2 justify-center mb-4">
                 <span className="bg-[#e34c26] text-white px-2 py-1 rounded text-xs flex items-center gap-1">
@@ -712,7 +712,7 @@ export default function Home() {
               className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[3] ? " visible" : ""}`}
             >
               <FaUniversity size={48} className="text-[#3178c6] mb-4" />
-              <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectAdmonTitle}</h3>
+              <h3 className="text-xl font-bold text-white mb-1 text-center">&quot;Administración de Empresas&quot;</h3>
               <p className="text-[#DCDCDC] text-center mb-3">{t.projectAdmonDesc}</p>
               <div className="flex flex-wrap gap-2 justify-center mb-4">
                 {t.projectAdmonTech.map((tech) => {
