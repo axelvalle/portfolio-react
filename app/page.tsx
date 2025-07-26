@@ -7,6 +7,7 @@ import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiG
 import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
 import { FaUniversity, FaCertificate } from "react-icons/fa";
 import { MdOutlineHive } from "react-icons/md";
+import { FaCheckCircle } from "react-icons/fa";
 
 // Animación para el badge "Listo para trabajar" / "Open to Work"
 import './badge-glow.css';
@@ -276,7 +277,7 @@ export default function Home() {
               {/* Badge animado "Listo para trabajar" / "Open to Work" */}
               <div className="flex justify-center mb-2">
                 <span
-                  className="relative inline-block px-5 py-2 rounded-full font-semibold text-base sm:text-lg shadow-lg animate-badge-glow"
+                  className="relative inline-flex items-center gap-2 px-5 py-2 rounded-full font-semibold text-base sm:text-lg shadow-lg animate-fade-float animate-badge-glow"
                   style={{
                     background: 'linear-gradient(90deg, #FF8C1A 0%, #FFB300 100%)',
                     color: '#181818',
@@ -284,6 +285,7 @@ export default function Home() {
                     boxShadow: '0 0 16px 2px #FF8C1A55',
                   }}
                 >
+                  <FaCheckCircle className="text-[#25D366] text-lg sm:text-xl drop-shadow" style={{marginRight: '0.2em'}} />
                   {lang === 'es' ? 'Listo para trabajar' : 'Open to Work'}
                 </span>
               </div>
