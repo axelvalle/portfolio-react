@@ -3,9 +3,8 @@
 import Image from "next/image";
 import BinaryRain from "./components/BinaryRain";
 import { useState, useEffect, useRef } from "react";
-import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel, SiNetlify } from "react-icons/si";
-import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
-import { FaUniversity, FaCertificate } from "react-icons/fa";
+import { SiTypescript, SiHtml5, SiCss3, SiDart, SiFlutter, SiPhp, SiAngular, SiGit, SiMysql, SiPython, SiPostgresql, SiVercel, SiNetlify, SiDotnet } from "react-icons/si";
+import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope, FaUniversity, FaCertificate, FaUserMd, FaJava, FaDatabase } from "react-icons/fa";
 import { MdOutlineHive } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -103,7 +102,15 @@ const translations = {
     cert2Tags: ["PHP", "MVC"],
     cert2Uni: "UNI Postgraduate Nicaragua",
     cert2Year: "2024",
-    liveDemo: "Live Demo"
+    liveDemo: "Github",
+    projectWimaxTitle: "WIMAX Medical Center",
+    projectWimaxDesc: "Vaccination management system using SQL Server, C# and .NET Framework.",
+    projectWimaxTech: ["SQL Server", "C#", ".NET Framework"],
+    projectWimaxBadges: [<FaDatabase size={16}/>, <SiDotnet size={16}/>, <SiDotnet size={16}/>],
+    projectAdmonTitle: "Business Administration",
+    projectAdmonDesc: "Desktop application in Java for business management: products, suppliers and payroll.",
+    projectAdmonTech: ["Java", "Swing", "Text Files"],
+    projectAdmonBadges: [<FaJava size={16}/>, <span className='font-bold'>S</span>, <span className='font-bold'>TXT</span>],
   },
   es: {
     navbar: ["Proyectos", "Tecnologías", "Redes Sociales"],
@@ -125,7 +132,15 @@ const translations = {
     cert2Tags: ["PHP", "MVC"],
     cert2Uni: "UNI Postgrado Nicaragua",
     cert2Year: "2024",
-    liveDemo: "Ver Demo"
+    liveDemo: "Github",
+    projectWimaxTitle: "WIMAX Centro Médico",
+    projectWimaxDesc: "Sistema de gestión de vacunación usando SQL Server, C# y .NET Framework.",
+    projectWimaxTech: ["SQL Server", "C#", ".NET Framework"],
+    projectWimaxBadges: [<FaDatabase size={16}/>, <SiDotnet size={16}/>, <SiDotnet size={16}/>],
+    projectAdmonTitle: "Administración de Empresas",
+    projectAdmonDesc: "Aplicación de escritorio en Java para la gestión administrativa de empresas: productos, proveedores y planillas de empleados.",
+    projectAdmonTech: ["Java", "Swing", "Archivos de texto"],
+    projectAdmonBadges: [<FaJava size={16}/>, <span className='font-bold'>S</span>, <span className='font-bold'>TXT</span>],
   }
 };
 
@@ -359,17 +374,17 @@ export default function Home() {
             </div>
             {/* La visibilidad de las tarjetas de proyecto es controlada por el hook `useFadeInOnScroll`. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
-              {/* Project 1 - FINALWIMAX */}
+              {/* Project 1 - WIMAX Centro Médico */}
               <div id="project-card-0" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[0] ? ' visible' : ''}`}>
-                <FaMobileAlt size={48} className="text-[#25c6f9] mb-4" />
-                <h3 className="text-xl font-bold text-white mb-1 text-center">“FINALWIMAX”</h3>
-                <p className="text-[#DCDCDC] text-center mb-3">Sistema de gestión de clientes y facturación para empresa de internet inalámbrico.</p>
+                <FaUserMd size={48} className="text-[#25c6f9] mb-4" />
+                <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectWimaxTitle}</h3>
+                <p className="text-[#DCDCDC] text-center mb-3">{t.projectWimaxDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Java</span>
-                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">Swing</span>
-                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">SQL Server</span>
+                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[0]}{t.projectWimaxTech[0]}</span>
+                  <span className="bg-[#178600] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[1]}{t.projectWimaxTech[1]}</span>
+                  <span className="bg-[#512BD4] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectWimaxBadges[2]}{t.projectWimaxTech[2]}</span>
                 </div>
-                <a href="https://github.com/axelvalle/FINALWIMAX" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
+                <a href="https://github.com/axelvalle/FINALWIMAX" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
               {/* Project 2 - StockFlow Mama Pola */}
               <div id="project-card-1" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[1] ? ' visible' : ''}`}>
@@ -380,7 +395,7 @@ export default function Home() {
                   <span className="bg-[#02569b] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiFlutter size={16}/>Flutter</span>
                   <span className="bg-[#0175c2] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiDart size={16}/>Dart</span>
                 </div>
-                <a href="https://github.com/axelvalle/stockflow-mama-pola" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
+                <a href="https://github.com/axelvalle/stockflow-mama-pola" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
               {/* Project 3 - Yaleli Creations (Coming Soon) */}
               <div id="project-card-2" className={`bg-gradient-to-br from-[#FF8C1A]/80 to-[#23272f]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[2] ? ' visible' : ''} animate-pulse`}>
@@ -393,19 +408,19 @@ export default function Home() {
                   <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiTypescript size={16}/>TS</span>
                   <span className="bg-[#dd0031] text-white px-2 py-1 rounded text-xs flex items-center gap-1"><SiAngular size={16}/>Angular</span>
                 </div>
-                <span className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 opacity-60 cursor-not-allowed"><FaGithub className="text-xl" />Github Repo</span>
+                <span className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 opacity-60 cursor-not-allowed"><FaGithub className="text-xl" />Github</span>
               </div>
               {/* Project 4 - Administración de Empresas */}
-              <div id="project-card-3" className="bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up visible">
+              <div id="project-card-3" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[3] ? ' visible' : ''}`}>
                 <FaUniversity size={48} className="text-[#3178c6] mb-4" />
-                <h3 className="text-xl font-bold text-white mb-1 text-center">“Administración de Empresas”</h3>
-                <p className="text-[#DCDCDC] text-center mb-3">Aplicación de escritorio en Java para la gestión administrativa de empresas: productos, proveedores y planillas de empleados.</p>
+                <h3 className="text-xl font-bold text-white mb-1 text-center">{t.projectAdmonTitle}</h3>
+                <p className="text-[#DCDCDC] text-center mb-3">{t.projectAdmonDesc}</p>
                 <div className="flex flex-wrap gap-2 justify-center mb-4">
-                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Java</span>
-                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">Swing</span>
-                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">Archivos de texto</span>
+                  <span className="bg-[#3178c6] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[0]}{t.projectAdmonTech[0]}</span>
+                  <span className="bg-[#FF8C1A] text-black px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[1]}{t.projectAdmonTech[1]}</span>
+                  <span className="bg-[#23272f] text-white px-2 py-1 rounded text-xs flex items-center gap-1">{t.projectAdmonBadges[2]}{t.projectAdmonTech[2]}</span>
                 </div>
-                <a href="https://github.com/axelvalle/Administracion_Empresas" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github Repo</a>
+                <a href="https://github.com/axelvalle/Administracion_Empresas" target="_blank" rel="noopener noreferrer" className="mt-auto bg-[#23272f] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#FF8C1A] hover:text-black transition flex items-center justify-center gap-2"><FaGithub className="text-xl" />Github</a>
               </div>
             </div>
           </section>
