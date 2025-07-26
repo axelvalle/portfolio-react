@@ -8,7 +8,14 @@ import { FaMobileAlt, FaPaintBrush, FaInstagram, FaTwitter, FaGithub, FaEnvelope
 import { FaUniversity, FaCertificate } from "react-icons/fa";
 import { MdOutlineHive } from "react-icons/md";
 
+// Animación para el badge "Listo para trabajar" / "Open to Work"
+import './badge-glow.css';
 
+/**
+ * Hook personalizado para detectar cuándo una sección entra en el viewport y aplicar un efecto de fade-in.
+ * @param {string[]} ids - Un array de IDs de los elementos a observar.
+ * @returns {boolean[]} Un array de booleanos que indica la visibilidad de cada elemento.
+ */
 function useSectionFadeIn(ids: string[]) {
   const [visible, setVisible] = useState(ids.map(() => false));
   useEffect(() => {
@@ -37,6 +44,12 @@ function useSectionFadeIn(ids: string[]) {
   return visible;
 }
 
+/**
+ * Hook personalizado para animar la aparición (fade-in) de una lista de elementos al hacer scroll.
+ * @param {number} count - El número de elementos a observar.
+ * @param {string} prefix - El prefijo del ID para cada elemento (e.g., "project-card-").
+ * @returns {boolean[]} Un array de booleanos que indica la visibilidad de cada elemento.
+ */
 function useFadeInOnScroll(count: number, prefix: string) {
   const [visible, setVisible] = useState(Array(count).fill(false));
   useEffect(() => {
@@ -64,6 +77,10 @@ function useFadeInOnScroll(count: number, prefix: string) {
   return visible;
 }
 
+/**
+ * Objeto que contiene las traducciones para inglés ('en') y español ('es').
+ * Se utiliza para la internacionalización (i18n) del sitio.
+ */
 const translations = {
   en: {
     navbar: ["Projects", "Technologies", "Social Media"],
@@ -111,26 +128,44 @@ const translations = {
   }
 };
 
+/**
+ * Componente principal de la página de inicio.
+ * Renderiza todas las secciones del portafolio.
+ */
+
 export default function Home() {
+  // --- STATE MANAGEMENT ---
+  // Estado para el menú móvil (abierto/cerrado)
   const [menuOpen, setMenuOpen] = useState(false);
+  // Estado para controlar la animación de cierre del menú
   const [menuAnimating, setMenuAnimating] = useState(false);
+  // Estado para el progreso del scroll, usado para animaciones entre secciones
   const [scrollProgress, setScrollProgress] = useState(0); // 0 = hero visible, 1 = tech visible
+  // Referencias a las secciones de Hero y Tecnologías para calcular el scroll
   const heroRef = useRef<HTMLElement | null>(null);
   const techRef = useRef<HTMLElement | null>(null);
+  // Estados para controlar la visibilidad y animación de entrada de las secciones.
+  // Se utiliza el hook `useSectionFadeIn` para la sección de tecnologías.
   const [techVisible] = useSectionFadeIn(['technologies']);
+  // Se utiliza `useFadeInOnScroll` para animar la aparición de elementos en varias secciones.
   const projectCardsVisible = useFadeInOnScroll(3, 'project');
   const techIconsVisible = useFadeInOnScroll(12, 'techicon');
   const socialCardsVisible = useFadeInOnScroll(4, 'social');
+  // Estado para el idioma actual (inglés o español)
   const [lang, setLang] = useState<'en' | 'es'>('en');
+  // Objeto de traducción actual basado en el idioma seleccionado
   const t = translations[lang];
+  // Estados para controlar la animación de entrada de la barra de navegación y la sección de héroe
   const [navbarVisible, setNavbarVisible] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
 
+  // useEffect para las animaciones iniciales de la barra de navegación y el héroe al cargar la página.
   useEffect(() => {
     setTimeout(() => setNavbarVisible(true), 100);
     setTimeout(() => setHeroVisible(true), 400);
   }, []);
 
+  // useEffect para manejar el cálculo del progreso del scroll entre la sección Hero y Tech.
   useEffect(() => {
     const handleScroll = () => {
       const hero = heroRef.current;
@@ -151,7 +186,10 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Maneja la animación de cierre
+  // --- MANEJADORES DE EVENTOS ---
+  /**
+   * Maneja el cambio de estado del menú móvil, incluyendo la animación de cierre.
+   */
   const handleMenuToggle = () => {
     if (menuOpen) {
       setMenuAnimating(true);
@@ -163,8 +201,11 @@ export default function Home() {
       setMenuOpen(true);
     }
   };
+
+  // --- RENDERIZADO DEL COMPONENTE ---
   return (
     <>
+      {/* Componente de fondo con efecto de lluvia de código binario */}
       <BinaryRain />
       <main
         className="bg-[#0A0A0A]/40 text-white overflow-hidden relative"
@@ -173,9 +214,10 @@ export default function Home() {
           backgroundRepeat: 'repeat',
           backgroundPosition: 'center',
         }}>
-          {/* Navbar */}
+          {/* Sección de la Barra de Navegación (Navbar) */}
           <div className={`w-full max-w-7xl mx-auto flex items-center justify-between py-4 sm:py-6 transition-all duration-700 ${navbarVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'}`}
             style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
+            {/* Botón para cambiar de idioma */}
             <button
               className="bg-[#23272f] text-white px-3 py-1 rounded-lg font-bold hover:bg-[#FF8C1A] hover:text-black transition"
               onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
@@ -188,7 +230,7 @@ export default function Home() {
                 <div className="flex items-center justify-center w-full">
                   <Image src="/logo.svg" alt="Logo" width={200} height={320} className="max-w-[85vw] sm:max-w-[260px] h-auto" />
                 </div>
-                {/* Botón hamburguesa solo en móviles */}
+                {/* Botón hamburguesa solo en móviles. Llama a `handleMenuToggle` al hacer clic. */}
                 <button
                   className="sm:hidden p-2 focus:outline-none"
                   aria-label="Abrir menú"
@@ -202,12 +244,13 @@ export default function Home() {
               {/* Menú desplegable en móviles */}
               <nav className={`w-full sm:w-auto ${(menuOpen || menuAnimating) ? 'block' : 'hidden'} sm:block`}>
                 <ul className={`flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-8 text-white sm:bg-transparent sm:rounded-none sm:shadow-none sm:p-0 sm:mt-0 mt-2 menu-dropdown-style ${menuOpen && !menuAnimating ? 'menu-dropdown-animate-in' : ''}${!menuOpen && menuAnimating ? ' menu-dropdown-animate-out' : ''}`}> 
+                  {/* Cada enlace del menú llama a `handleMenuToggle` para cerrar el menú en móviles. */}
                   <li><a href="#projects" className="group relative transition text-white hover:text-[#FF8C1A]" onClick={handleMenuToggle}>{t.navbar[0]}<span className='absolute left-0 -bottom-1 w-0 h-1 bg-[#FF8C1A] rounded transition-all duration-300 group-hover:w-full'></span></a></li>
                   <li><a href="#technologies" className="group relative transition text-white hover:text-[#FF8C1A]" onClick={handleMenuToggle}>{t.navbar[1]}<span className='absolute left-0 -bottom-1 w-0 h-1 bg-[#FF8C1A] rounded transition-all duration-300 group-hover:w-full'></span></a></li>
                   <li><a href="#social-media" className="group relative transition text-white hover:text-[#FF8C1A]" onClick={handleMenuToggle}>{t.navbar[2]}<span className='absolute left-0 -bottom-1 w-0 h-1 bg-[#FF8C1A] rounded transition-all duration-300 group-hover:w-full'></span></a></li>
                 </ul>
               </nav>
-              {/* Social icons in navbar */}
+              {/* Iconos de redes sociales en la barra de navegación (solo para escritorio) */}
               <div className="hidden sm:flex items-center gap-4 ml-6">
                 <a href="https://instagram.com/perpetuaa_v" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#FF8C1A] transition text-2xl"><FaInstagram /></a>
                 <a href="https://twitter.com/perpetua_v" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="hover:text-[#FF8C1A] transition text-2xl"><FaTwitter /></a>
@@ -216,26 +259,40 @@ export default function Home() {
             </header>
           </div>
 
-          {/* Hero Section */}
+          {/* Sección del Héroe (Hero) */}
           <section
             id="hero"
             ref={heroRef}
             className={`z-10 flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-7xl mt-[-1.5rem] md:mt-2 gap-8 md:gap-0 transition-all duration-700 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}
           >
-            {/* Text Side */}
+            {/* Lado del texto */}
             <div className={`flex flex-col items-center justify-center w-full md:max-w-xl text-center mt-0 md:mt-0 transition-all duration-700 ${heroVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
               style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
               <h1 className="montserrat-title text-5xl xs:text-6xl sm:text-7xl md:text-8xl font-extrabold leading-[1.05] tracking-tight md:leading-[1.08] md:tracking-tight mb-2 animate-fade-float" style={{letterSpacing: '-0.02em'}}>
                 <span className="block text-[#FF8C1A] drop-shadow-[0_2px_10px_#FF8C1A88]">{t.heroTitle1}</span>
                 <span className="block text-[#FFE7B0] text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-bold mt-1">{t.heroTitle2}</span>
               </h1>
+              {/* Badge animado "Listo para trabajar" / "Open to Work" */}
+              <div className="flex justify-center mb-2">
+                <span
+                  className="relative inline-block px-5 py-2 rounded-full font-semibold text-base sm:text-lg shadow-lg animate-badge-glow"
+                  style={{
+                    background: 'linear-gradient(90deg, #FF8C1A 0%, #FFB300 100%)',
+                    color: '#181818',
+                    letterSpacing: '0.04em',
+                    boxShadow: '0 0 16px 2px #FF8C1A55',
+                  }}
+                >
+                  {lang === 'es' ? 'Listo para trabajar' : 'Open to Work'}
+                </span>
+              </div>
               <p className="mt-3 sm:mt-5 text-base xs:text-lg sm:text-xl text-[#DCDCDC] max-w-xs sm:max-w-lg mx-auto font-medium animate-fade-float">
                 {t.heroDesc}
               </p>
             </div>
 
-            {/* Character Image */}
+            {/* Imagen del personaje */}
             <div className={`relative mt-6 md:mt-0 w-[220px] h-[320px] xs:w-[260px] xs:h-[380px] sm:w-[300px] sm:h-[420px] md:w-[360px] md:h-[520px] flex-shrink-0 animate-zoom-bounce transition-all duration-700 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
               style={{ transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)' }}>
               <div className="absolute inset-0 bg-gradient-to-t from-[#FF8C1A]/40 to-transparent rounded-full blur-2xl z-0"></div>
@@ -250,7 +307,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Technologies Section */}
+          {/* Sección de Tecnologías */}
+          {/* La visibilidad de esta sección es controlada por el hook `useSectionFadeIn`. */}
           <section
             id="technologies"
             ref={techRef}
@@ -266,6 +324,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center w-full">
               <div className="w-full flex justify-center">
+                {/* La visibilidad de los iconos es controlada por el hook `useFadeInOnScroll`. */}
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-y-8 gap-x-8 sm:gap-x-10 mb-0 max-w-[340px] sm:max-w-2xl md:max-w-4xl w-full px-4 sm:px-2">
                   <div id="techicon-card-0" className={`col-span-1 flex justify-center fade-up${techIconsVisible[0] ? ' visible' : ''}`}><SiTypescript size={60} color="#3178c6" /></div>
                   <div id="techicon-card-1" className={`col-span-1 flex justify-center fade-up${techIconsVisible[1] ? ' visible' : ''}`}><SiHtml5 size={60} color="#e34c26" /></div>
@@ -296,6 +355,7 @@ export default function Home() {
               <h2 className="text-4xl sm:text-5xl font-extrabold text-[#FF8C1A] tracking-tight leading-tight mb-1 text-left">{t.projectsTitle}</h2>
               <p className="text-base sm:text-lg text-[#F3F3F3] max-w-2xl text-left leading-relaxed tracking-normal mb-8">{t.projectsDesc}</p>
             </div>
+            {/* La visibilidad de las tarjetas de proyecto es controlada por el hook `useFadeInOnScroll`. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
               {/* Project 1 */}
               <div id="project-card-0" className={`bg-[#181818]/90 rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up${projectCardsVisible[0] ? ' visible' : ''}`}>
@@ -388,6 +448,7 @@ export default function Home() {
                 <h2 className="text-4xl sm:text-5xl font-extrabold text-[#FF8C1A] tracking-tight leading-tight mb-1 text-left w-full">Social Media</h2>
                 <p className="text-base sm:text-lg text-[#F3F3F3] max-w-2xl text-left leading-relaxed tracking-normal mb-8 w-full">You can find me on...</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                  {/* La visibilidad de las tarjetas de redes sociales es controlada por el hook `useFadeInOnScroll`. */}
                   {/* Instagram */}
                   <a
                     id="social-card-0"
@@ -453,7 +514,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            {/* Character image right */}
+            {/* Imagen del personaje a la derecha */}
             <div className="flex flex-1 justify-center md:justify-end items-end mt-8 md:mt-0 animate-zoom-bounce">
               <div className="relative w-[260px] h-[420px] xs:w-[320px] xs:h-[520px] sm:w-[380px] sm:h-[600px]">
                 <Image
@@ -468,7 +529,7 @@ export default function Home() {
             </div>
           </section>
 
-      {/* Footer */}
+      {/* Pie de página (Footer) */}
       <footer className="w-full bg-[#181818] text-[#FF8C1A] py-8 mt-12 flex flex-col items-center justify-center text-center">
         <div className="text-2xl font-bold mb-2">Axel Valle</div>
         <div className="text-sm text-[#DCDCDC] mb-2">&copy; {new Date().getFullYear()} All rights reserved.</div>

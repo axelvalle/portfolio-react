@@ -1,0 +1,14 @@
+@keyframes badge-glow {
+  0%, 100% {
+    box-shadow: 0 0 16px 2px #FF8C1A55, 0 0 0 0 #FFB30044;
+    filter: brightness(1.05);
+  }
+  50% {
+    box-shadow: 0 0 32px 8px #FF8C1A99, 0 0 16px 8px #FFB30066;
+    filter: brightness(1.15);
+  }
+}
+
+.animate-badge-glow {
+  animation: badge-glow 2.2s ease-in-out infinite;
+} 
