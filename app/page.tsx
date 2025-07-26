@@ -283,8 +283,9 @@ export default function Home() {
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
               <div className="flex items-center">
-                <Image src="/logo.svg" alt="Logo" width={120} height={40} className="h-8 w-auto" />
+                  <span className="text-xl font-bold tracking-wide">&lt;&gt;Axel Valle</span>
               </div>
+
 
               {/* Desktop Navigation - Estilo pestañas */}
               <div className="hidden md:flex items-center space-x-1 bg-[#181818]/80 rounded-full p-1 backdrop-blur-sm border border-[#FF8C1A]/20">
