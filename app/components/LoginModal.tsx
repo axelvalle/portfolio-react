@@ -10,7 +10,7 @@ export default function LoginModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onLogin: (username: string, password: string) => boolean;
+  onLogin: (username: string, password: string) => Promise<boolean>;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,11 +50,11 @@ export default function LoginModal({
 
   if (!open) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-    const ok = onLogin(username.trim(), password);
+    const ok = await onLogin(username.trim(), password);
     setSubmitting(false);
     if (!ok) {
       setError("Usuario o contraseña incorrectos.");
@@ -156,12 +156,7 @@ export default function LoginModal({
           </button>
         </form>
 
-        {/* Hint */}
-        <p className="text-xs text-[#777] text-center mt-4">
-          Demo: <code className="text-[#FF8C1A]">axel</code> /{" "}
-          <code className="text-[#FF8C1A]">axel2024</code>
-        </p>
-      </div>
+        </div>
     </div>
   );
 }

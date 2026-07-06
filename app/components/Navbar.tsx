@@ -81,17 +81,20 @@ export default function Navbar({
 
   const handleNavClick = () => handleMenuToggle();
 
-  const handleLoginClick = () => {
+  const handleLoginClick = async () => {
     if (isAuthenticated) {
-      logout();
+      await logout();
       showToast("success", "Sesión cerrada");
     } else {
       setLoginOpen(true);
     }
   };
 
-  const handleLoginSubmit = (username: string, password: string): boolean => {
-    const ok = login(username, password);
+  const handleLoginSubmit = async (
+    username: string,
+    password: string,
+  ): Promise<boolean> => {
+    const ok = await login(username, password);
     if (ok) {
       setLoginOpen(false);
       showToast("success", "Login exitoso");

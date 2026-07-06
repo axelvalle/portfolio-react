@@ -1,93 +1,110 @@
 "use client";
 
 /**
- * Singleton store de autenticación.
+ * Hook de autenticación que consulta el endpoint server-side `/api/auth/me`.
  *
- * Antes había un `useAuth` por componente que leía/escribía sessionStorage
- * en su propio useState. Eso causaba que el Navbar y page.tsx tuvieran
- * estados independientes: cuando uno llamaba login(), el otro no se enteraba
- * hasta recargar la página.
- *
- * Esta implementación expone un store global (un único useState compartido)
- * con subscribe/notify, así todos los useAuth() en el árbol reflejan el
- * mismo valor instantáneamente.
+ * La cookie httpOnly + el token firmado viven en el servidor. El cliente
+ * nunca tiene acceso al token ni a la contraseña. Solo hace fetch a `/api/auth/me`
+ * para saber si está logueado, y a `/api/auth/login` o `/api/auth/logout`
+ * para cambiar el estado.
  */
 import { useEffect, useState, useSyncExternalStore, useCallback } from "react";
-import {
-  validateCredentials,
-  persistSession,
-  clearSession,
-  getSession,
-  type Session,
-} from "../lib/auth";
 
-// --- Singleton ---
-type Listener = () => void;
-let currentSession: Session | null = null;
-const listeners = new Set<Listener>();
+type AuthState = {
+  status: "loading" | "authed" | "anonymous";
+  username: string | null;
+};
 
-function setSession(next: Session | null) {
-  currentSession = next;
+// --- Singleton store ---
+let current: AuthState = { status: "loading", username: null };
+const listeners = new Set<() => void>();
+
+function setState(next: AuthState) {
+  current = next;
   listeners.forEach((l) => l());
 }
 
-function subscribe(l: Listener) {
+function subscribe(l: () => void) {
   listeners.add(l);
   return () => {
     listeners.delete(l);
   };
 }
 
-function getSnapshot(): Session | null {
-  return currentSession;
+function getSnapshot(): AuthState {
+  return current;
 }
 
-let initialized = false;
-function ensureInit() {
-  if (initialized) return;
-  initialized = true;
-  currentSession = getSession();
-  if (typeof window !== "undefined") {
-    // Sincronizar entre pestañas.
-    window.addEventListener("storage", (e) => {
-      if (e.key === "portfolio:auth:session:v2") {
-        setSession(getSession());
-      }
-    });
+/** Refresca el estado desde el servidor. Llamado en mount y después de login/logout. */
+export async function refreshAuth(): Promise<void> {
+  try {
+    const res = await fetch("/api/auth/me", { credentials: "same-origin" });
+    if (!res.ok) {
+      setState({ status: "anonymous", username: null });
+      return;
+    }
+    const data = (await res.json()) as { authenticated: boolean; username?: string };
+    if (data.authenticated && data.username) {
+      setState({ status: "authed", username: data.username });
+    } else {
+      setState({ status: "anonymous", username: null });
+    }
+  } catch {
+    setState({ status: "anonymous", username: null });
   }
 }
 
 // --- Hook público ---
 export function useAuth() {
-  // Hidratación inicial (client-only).
+  const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
   const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
-    ensureInit();
     setHydrated(true);
+    // Disparar el primer fetch si todavía estamos en loading
+    if (current.status === "loading") {
+      refreshAuth();
+    }
   }, []);
 
-  // useSyncExternalStore: re-renderiza a todos los consumidores cuando
-  // el singleton cambia, sin importar en qué componente estén.
-  const session = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const login = useCallback(
+    async (username: string, password: string): Promise<boolean> => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+          credentials: "same-origin",
+        });
+        if (!res.ok) {
+          // estado sigue como está
+          return false;
+        }
+        await refreshAuth();
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [],
+  );
 
-  const login = useCallback((username: string, password: string): boolean => {
-    ensureInit();
-    if (!validateCredentials(username, password)) return false;
-    const next: Session = { username, loggedInAt: Date.now() };
-    persistSession(next);
-    setSession(next);
-    return true;
-  }, []);
-
-  const logout = useCallback(() => {
-    ensureInit();
-    clearSession();
-    setSession(null);
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+      });
+    } catch {
+      // ignorar
+    }
+    setState({ status: "anonymous", username: null });
   }, []);
 
   return {
-    session,
-    isAuthenticated: session !== null,
+    session: state.status === "authed" ? { username: state.username! } : null,
+    isAuthenticated: state.status === "authed",
+    isLoading: state.status === "loading",
     hydrated,
     login,
     logout,
