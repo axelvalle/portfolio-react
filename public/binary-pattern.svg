@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" viewBox="0 0 40 20">
+  <rect width="40" height="20" fill="transparent"/>
+  <g fill="#FF8C1A" font-family="monospace" font-size="12" opacity="0.06">
+    <text x="0" y="12">01</text>
+    <text x="20" y="12">10</text>
+  </g>
+</svg>
