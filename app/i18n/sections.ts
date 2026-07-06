@@ -130,7 +130,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: ".NET Framework", color: "#512BD4", iconKey: "dotnet" },
       ],
       githubUrl: "https://github.com/axelvalle/FINALWIMAX",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "mobile",
@@ -141,7 +141,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: "Dart", color: "#0175c2", iconKey: "dart" },
       ],
       githubUrl: "https://github.com/axelvalle/stockflow-mama-pola",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "brush",
@@ -155,7 +155,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
       ],
       githubUrl: "",
       comingSoon: true,
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "university",
@@ -167,7 +167,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: "Text Files", color: "#23272f" },
       ],
       githubUrl: "https://github.com/axelvalle/Administracion_Empresas",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
   ],
   es: [
@@ -181,7 +181,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: ".NET Framework", color: "#512BD4", iconKey: "dotnet" },
       ],
       githubUrl: "https://github.com/axelvalle/FINALWIMAX",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "mobile",
@@ -192,7 +192,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: "Dart", color: "#0175c2", iconKey: "dart" },
       ],
       githubUrl: "https://github.com/axelvalle/stockflow-mama-pola",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "brush",
@@ -206,7 +206,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
       ],
       githubUrl: "",
       comingSoon: true,
-      lang: "",
+      targetLangs: ["en", "es"],
     },
     {
       iconKey: "university",
@@ -218,7 +218,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
         { name: "Archivos de texto", color: "#23272f" },
       ],
       githubUrl: "https://github.com/axelvalle/Administracion_Empresas",
-      lang: "",
+      targetLangs: ["en", "es"],
     },
   ],
 };

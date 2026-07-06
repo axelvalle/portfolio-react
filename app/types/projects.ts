@@ -32,8 +32,8 @@ export type Project = {
   techs: TechBadge[];
   githubUrl: string;
   comingSoon?: boolean;
-  /** Idioma al que pertenece. "" = ambos. */
-  lang: "en" | "es" | "";
+  /** Idiomas en los que aparece este proyecto. ["en","es"] = universal. */
+  targetLangs: ("en" | "es")[];
 };
 
 /** Lo que el editor recibe para crear/editar (sin id). */

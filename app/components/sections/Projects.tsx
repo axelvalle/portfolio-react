@@ -41,7 +41,7 @@ function ProjectCard({
           type="button"
           onClick={() => onEdit(project)}
           aria-label={`Editar ${project.title}`}
-          className="absolute top-2 right-2 p-2 rounded-full bg-[#0A0A0A]/80 text-[#FF8C1A] border border-[#FF8C1A]/30 opacity-0 group-hover:opacity-100 hover:bg-[#FF8C1A] hover:text-black focus:opacity-100 transition-all"
+          className="absolute top-2 right-2 p-2 rounded-full bg-[#0A0A0A]/80 text-[#FF8C1A] border border-[#FF8C1A]/30 opacity-70 hover:opacity-100 hover:bg-[#FF8C1A] hover:text-black transition-all"
         >
           <FaEdit size={14} />
         </button>

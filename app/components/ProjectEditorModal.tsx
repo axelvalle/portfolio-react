@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaTimes, FaTrash, FaPlus } from "react-icons/fa";
+import { FaTimes, FaTrash, FaPlus, FaGlobe } from "react-icons/fa";
 import type { Project, ProjectInput, TechBadge, ProjectIconKey } from "../types/projects";
 import { projectIcons } from "../iconRegistry";
 
@@ -9,7 +9,21 @@ const ICON_KEYS: ProjectIconKey[] = ["medical", "mobile", "brush", "university"]
 
 type Draft = Omit<ProjectInput, "techs"> & { techs: TechBadge[] };
 
-function emptyDraft(lang: "en" | "es"): Draft {
+/** Opciones del selector de idioma (3-opciones explícito, sin string vacío). */
+type LangOption = "es" | "en" | "both";
+
+function optionToTargetLangs(opt: LangOption): ("en" | "es")[] {
+  if (opt === "both") return ["en", "es"];
+  return [opt];
+}
+
+function targetLangsToOption(target: ("en" | "es")[]): LangOption {
+  if (target.includes("en") && target.includes("es")) return "both";
+  if (target.includes("es")) return "es";
+  return "en";
+}
+
+function emptyDraft(currentLang: "en" | "es"): Draft {
   return {
     iconKey: "mobile",
     title: "",
@@ -17,7 +31,7 @@ function emptyDraft(lang: "en" | "es"): Draft {
     techs: [],
     githubUrl: "",
     comingSoon: false,
-    lang,
+    targetLangs: optionToTargetLangs(currentLang),
   };
 }
 
@@ -45,13 +59,15 @@ export default function ProjectEditorModal({
           techs: initial.techs,
           githubUrl: initial.githubUrl,
           comingSoon: initial.comingSoon ?? false,
-          lang: initial.lang || lang,
+          targetLangs: initial.targetLangs,
         }
       : emptyDraft(lang),
   );
   const [error, setError] = useState<string | null>(null);
 
   // Reset al abrir/cambiar initial.
+  // Importante: NO depende de `lang`. Si depende, un cross-fade de idioma
+  // mientras el modal está cerrado reescribiría el draft a vacío.
   useEffect(() => {
     if (open) {
       setDraft(
@@ -63,13 +79,14 @@ export default function ProjectEditorModal({
               techs: initial.techs,
               githubUrl: initial.githubUrl,
               comingSoon: initial.comingSoon ?? false,
-              lang: initial.lang || lang,
+              targetLangs: initial.targetLangs,
             }
           : emptyDraft(lang),
       );
       setError(null);
     }
-  }, [open, initial, lang]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, initial?.id]);
 
   // Esc para cerrar.
   useEffect(() => {
@@ -125,6 +142,12 @@ export default function ProjectEditorModal({
     // Limpiar techs vacíos.
     const cleanTechs = draft.techs.filter((t) => t.name.trim() !== "");
 
+    // Validar que targetLangs tenga al menos un idioma.
+    if (draft.targetLangs.length === 0) {
+      setError("Selecciona al menos un idioma para el proyecto.");
+      return;
+    }
+
     onSave({
       iconKey: draft.iconKey,
       title: draft.title.trim(),
@@ -132,7 +155,7 @@ export default function ProjectEditorModal({
       techs: cleanTechs,
       githubUrl: draft.githubUrl.trim(),
       comingSoon: draft.comingSoon,
-      lang: draft.lang || "",
+      targetLangs: draft.targetLangs,
     });
   };
 
@@ -179,6 +202,40 @@ export default function ProjectEditorModal({
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Selector de idioma: ¿en qué idiomas aparece este proyecto? */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-[#F3F3F3] mb-2">
+              <FaGlobe className="text-[#FF8C1A]" /> Idiomas en los que aparece
+            </label>
+            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Idiomas del proyecto">
+              {([
+                { value: "es" as const, label: "Español" },
+                { value: "en" as const, label: "English" },
+                { value: "both" as const, label: "Ambos" },
+              ]).map((opt) => {
+                const active = targetLangsToOption(draft.targetLangs) === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() =>
+                      updateField("targetLangs", optionToTargetLangs(opt.value))
+                    }
+                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-all ${
+                      active
+                        ? "border-[#FF8C1A] bg-[#FF8C1A]/10 text-[#FF8C1A]"
+                        : "border-[#FF8C1A]/20 hover:border-[#FF8C1A]/50 bg-[#0A0A0A]/60 text-[#DCDCDC]"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Icono */}
           <div>
             <label className="block text-sm font-medium text-[#F3F3F3] mb-2">Icono</label>
