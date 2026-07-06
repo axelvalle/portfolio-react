@@ -108,6 +108,121 @@ export const projectsCopy: Record<Lang, {
   },
 };
 
+/**
+ * Defaults de proyectos en el shape nuevo (Project[] serializable).
+ * Se usa como fallback cuando localStorage está vacío.
+ * El `id` se genera en runtime con crypto.randomUUID() para evitar
+ * colisiones si se hidrata en múltiples pestañas.
+ */
+import type { Project } from "../types/projects";
+
+export type DefaultProject = Omit<Project, "id">;
+
+export const defaultProjects: Record<Lang, DefaultProject[]> = {
+  en: [
+    {
+      iconKey: "medical",
+      title: "WIMAX Medical Center",
+      desc: "Vaccination management system using SQL Server, C# and .NET Framework.",
+      techs: [
+        { name: "SQL Server", color: "#23272f", iconKey: "sqlserver" },
+        { name: "C#", color: "#178600", iconKey: "dotnet" },
+        { name: ".NET Framework", color: "#512BD4", iconKey: "dotnet" },
+      ],
+      githubUrl: "https://github.com/axelvalle/FINALWIMAX",
+      lang: "",
+    },
+    {
+      iconKey: "mobile",
+      title: '"StockFlow Mama Pola"',
+      desc: "Mobile inventory and statistics app for small businesses.",
+      techs: [
+        { name: "Flutter", color: "#02569b", iconKey: "flutter" },
+        { name: "Dart", color: "#0175c2", iconKey: "dart" },
+      ],
+      githubUrl: "https://github.com/axelvalle/stockflow-mama-pola",
+      lang: "",
+    },
+    {
+      iconKey: "brush",
+      title: '"Yaleli Creations"',
+      desc: "Coming soon...",
+      techs: [
+        { name: "HTML", color: "#e34c26", iconKey: "html" },
+        { name: "CSS", color: "#1572b6", iconKey: "css" },
+        { name: "TS", color: "#3178c6", iconKey: "typescript" },
+        { name: "Angular", color: "#dd0031", iconKey: "angular" },
+      ],
+      githubUrl: "",
+      comingSoon: true,
+      lang: "",
+    },
+    {
+      iconKey: "university",
+      title: '"Administración de Empresas"',
+      desc: "Desktop application in Java for business management: products, suppliers and payroll.",
+      techs: [
+        { name: "Java", color: "#3178c6", iconKey: "java" },
+        { name: "Swing", color: "#FF8C1A" },
+        { name: "Text Files", color: "#23272f" },
+      ],
+      githubUrl: "https://github.com/axelvalle/Administracion_Empresas",
+      lang: "",
+    },
+  ],
+  es: [
+    {
+      iconKey: "medical",
+      title: "WIMAX Centro Médico",
+      desc: "Sistema de gestión de vacunación usando SQL Server, C# y .NET Framework.",
+      techs: [
+        { name: "SQL Server", color: "#23272f", iconKey: "sqlserver" },
+        { name: "C#", color: "#178600", iconKey: "dotnet" },
+        { name: ".NET Framework", color: "#512BD4", iconKey: "dotnet" },
+      ],
+      githubUrl: "https://github.com/axelvalle/FINALWIMAX",
+      lang: "",
+    },
+    {
+      iconKey: "mobile",
+      title: '"StockFlow Mama Pola"',
+      desc: "App móvil de inventario y estadísticas para pequeños negocios.",
+      techs: [
+        { name: "Flutter", color: "#02569b", iconKey: "flutter" },
+        { name: "Dart", color: "#0175c2", iconKey: "dart" },
+      ],
+      githubUrl: "https://github.com/axelvalle/stockflow-mama-pola",
+      lang: "",
+    },
+    {
+      iconKey: "brush",
+      title: '"Yaleli Creations"',
+      desc: "Próximamente...",
+      techs: [
+        { name: "HTML", color: "#e34c26", iconKey: "html" },
+        { name: "CSS", color: "#1572b6", iconKey: "css" },
+        { name: "TS", color: "#3178c6", iconKey: "typescript" },
+        { name: "Angular", color: "#dd0031", iconKey: "angular" },
+      ],
+      githubUrl: "",
+      comingSoon: true,
+      lang: "",
+    },
+    {
+      iconKey: "university",
+      title: '"Administración de Empresas"',
+      desc: "Aplicación de escritorio en Java para gestión administrativa: productos, proveedores y planillas.",
+      techs: [
+        { name: "Java", color: "#3178c6", iconKey: "java" },
+        { name: "Swing", color: "#FF8C1A" },
+        { name: "Archivos de texto", color: "#23272f" },
+      ],
+      githubUrl: "https://github.com/axelvalle/Administracion_Empresas",
+      lang: "",
+    },
+  ],
+};
+
 export const certificationsCopy = {
   en: {
     title: "Certifications",

@@ -6,6 +6,7 @@ import BinaryRain from "./components/BinaryRain"
 import Navbar from "./components/Navbar"
 import LangFade from "./components/LangFade"
 import { useState, useEffect } from "react"
+import { useAuth } from "./hooks/useAuth"
 
 // Lazy-load de secciones que no están en el viewport inicial.
 // ssr: false evita que el JS del cliente se renderice en el servidor.
@@ -76,6 +77,9 @@ export default function Home() {
     }
   }, [lang])
 
+  // Auth: vive aquí para que el Navbar y Projects compartan el mismo estado.
+  const { isAuthenticated, hydrated } = useAuth()
+
   // Visibilidad de la sección de tecnologías (animación de entrada).
   const [techVisible] = useSectionFadeIn(["technologies"])
 
@@ -110,7 +114,7 @@ export default function Home() {
         </section>
 
         <LangFade lang={lang}>
-          <Projects lang={lang} />
+          <Projects lang={lang} isAuthenticated={hydrated && isAuthenticated} />
         </LangFade>
         <LangFade lang={lang}>
           <Certifications lang={lang} />

@@ -251,3 +251,12 @@ body {
   transform: scale(1.18);
   filter: drop-shadow(0 0 12px rgba(255, 140, 26, 0.6));
 }
+
+/* === Hide scrollbar pero mantener scroll funcional (carousel). === */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
