@@ -19,12 +19,20 @@ export function useAuth() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    // Limpiar la key vieja de localStorage (v1) para no acumular basura
+    // de la versión anterior que sí persistía.
+    try {
+      window.localStorage.removeItem("portfolio:auth:session:v1");
+    } catch {
+      // ignorar
+    }
+
     setSession(getSession());
     setHydrated(true);
 
-    // Sincronizar logout/login entre pestañas.
+    // Sincronizar logout/login entre pestañas (sessionStorage también dispara storage event).
     const onStorage = (e: StorageEvent) => {
-      if (e.key === "portfolio:auth:session:v1") {
+      if (e.key === "portfolio:auth:session:v2") {
         setSession(getSession());
       }
     };

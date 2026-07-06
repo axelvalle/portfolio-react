@@ -242,9 +242,15 @@ function ProjectsCarousel({
 export default function Projects({
   lang,
   isAuthenticated,
+  loginSuccessSignal,
 }: {
   lang: "en" | "es";
   isAuthenticated: boolean;
+  /**
+   * Cada vez que este número cambia, Projects scrollea a sí mismo y
+   * abre el modal "Nuevo proyecto". Lo dispara page.tsx después de un login.
+   */
+  loginSuccessSignal?: number;
 }) {
   const { projects, add, update, remove, reset } = useProjects(lang);
   const t = projectsCopy[lang];
@@ -289,6 +295,29 @@ export default function Projects({
       reset();
     }
   };
+
+  // Tras login: scroll a #projects y abrir modal "Nuevo".
+  // Disparado por page.tsx cuando loginSuccessSignal cambia.
+  useEffect(() => {
+    if (!loginSuccessSignal) return; // skip mount inicial
+    const section = document.getElementById("projects");
+    if (section) {
+      // Pequeño delay para que el browser termine de aplicar el scroll-behavior smooth.
+      const scrollId = setTimeout(() => {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+      // Abrir modal después de que el scroll haya avanzado un poco.
+      const modalId = setTimeout(() => {
+        setEditing(null);
+        setEditorOpen(true);
+      }, 450);
+      return () => {
+        clearTimeout(scrollId);
+        clearTimeout(modalId);
+      };
+    }
+    return undefined;
+  }, [loginSuccessSignal]);
 
   return (
     <section

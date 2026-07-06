@@ -15,9 +15,15 @@ const SECTION_IDS = ["projects", "technologies", "social-media"] as const;
 export default function Navbar({
   lang,
   onLangChange,
+  onLoginSuccess,
 }: {
   lang: Lang;
   onLangChange: (next: Lang) => void;
+  /**
+   * Callback opcional disparado cuando un login es exitoso.
+   * Usado por page.tsx para scrollear a #projects y abrir el modal "Nuevo".
+   */
+  onLoginSuccess?: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuAnimating, setMenuAnimating] = useState(false);
@@ -84,7 +90,13 @@ export default function Navbar({
 
   const handleLoginSubmit = (username: string, password: string): boolean => {
     const ok = login(username, password);
-    if (ok) setLoginOpen(false);
+    if (ok) {
+      setLoginOpen(false);
+      // Notificamos al padre para que scrollee + abra el modal "Nuevo".
+      // El padre debe manejar el timing (esperar a que React renderice el FAB
+      // antes de hacer scroll).
+      onLoginSuccess?.();
+    }
     return ok;
   };
 

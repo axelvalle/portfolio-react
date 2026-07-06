@@ -11,7 +11,9 @@
 export const DEMO_USERNAME = "axel";
 export const DEMO_PASSWORD = "axel2024";
 
-const SESSION_KEY = "portfolio:auth:session:v1";
+// Usamos sessionStorage (no localStorage) para que la sesión muera
+// automáticamente al cerrar la pestaña. No sobrevive a recargas.
+const SESSION_KEY = "portfolio:auth:session:v2";
 
 export type Session = {
   username: string;

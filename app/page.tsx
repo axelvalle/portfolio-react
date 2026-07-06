@@ -4,7 +4,7 @@ import dynamic from "next/dynamic"
 import BinaryRain from "./components/BinaryRain"
 import Navbar from "./components/Navbar"
 import LangFade from "./components/LangFade"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useAuth } from "./hooks/useAuth"
 
 // Lazy-load de secciones que no están en el viewport inicial.
@@ -82,6 +82,15 @@ export default function Home() {
   // Visibilidad de la sección de tecnologías (animación de entrada).
   const [techVisible] = useSectionFadeIn(["technologies"])
 
+  // Tras un login exitoso: contador que Projects observa para abrir el modal "Nuevo".
+  const [loginSuccessCount, setLoginSuccessCount] = useState(0)
+
+  const handleLoginSuccess = useCallback(() => {
+    // Pequeño delay para que React pinte el FAB antes de hacer scroll,
+    // y luego otro beat antes de abrir el modal para que se vea el scroll.
+    setLoginSuccessCount((c) => c + 1)
+  }, [])
+
   return (
     <>
       {/* Componente de fondo con efecto de lluvia de código binario */}
@@ -95,7 +104,7 @@ export default function Home() {
           backgroundPosition: "center",
         }}
       >
-        <Navbar lang={lang} onLangChange={setLang} />
+        <Navbar lang={lang} onLangChange={setLang} onLoginSuccess={handleLoginSuccess} />
 
         {/* Espaciador para el navbar fijo */}
         <div className="h-16"></div>
@@ -113,7 +122,7 @@ export default function Home() {
         </section>
 
         <LangFade lang={lang}>
-          <Projects lang={lang} isAuthenticated={hydrated && isAuthenticated} />
+          <Projects lang={lang} isAuthenticated={hydrated && isAuthenticated} loginSuccessSignal={loginSuccessCount} />
         </LangFade>
         <LangFade lang={lang}>
           <Certifications lang={lang} />
