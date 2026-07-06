@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { FaInstagram, FaTwitter, FaGithub } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 import { useAuth } from "../hooks/useAuth";
+import { showToast } from "../lib/toast";
 
 type Lang = "en" | "es";
 
@@ -83,6 +84,7 @@ export default function Navbar({
   const handleLoginClick = () => {
     if (isAuthenticated) {
       logout();
+      showToast("success", "Sesión cerrada");
     } else {
       setLoginOpen(true);
     }
@@ -92,9 +94,8 @@ export default function Navbar({
     const ok = login(username, password);
     if (ok) {
       setLoginOpen(false);
+      showToast("success", "Login exitoso");
       // Notificamos al padre para que scrollee + abra el modal "Nuevo".
-      // El padre debe manejar el timing (esperar a que React renderice el FAB
-      // antes de hacer scroll).
       onLoginSuccess?.();
     }
     return ok;

@@ -1,6 +1,18 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+/**
+ * Singleton store de autenticación.
+ *
+ * Antes había un `useAuth` por componente que leía/escribía sessionStorage
+ * en su propio useState. Eso causaba que el Navbar y page.tsx tuvieran
+ * estados independientes: cuando uno llamaba login(), el otro no se enteraba
+ * hasta recargar la página.
+ *
+ * Esta implementación expone un store global (un único useState compartido)
+ * con subscribe/notify, así todos los useAuth() en el árbol reflejan el
+ * mismo valor instantáneamente.
+ */
+import { useEffect, useState, useSyncExternalStore, useCallback } from "react";
 import {
   validateCredentials,
   persistSession,
@@ -9,38 +21,57 @@ import {
   type Session,
 } from "../lib/auth";
 
-/**
- * Hook de autenticación para el demo.
- * Devuelve la sesión actual + login/logout.
- */
-export function useAuth() {
-  // Inicialización lazy: leer localStorage al montar (client-only).
-  const [session, setSession] = useState<Session | null>(null);
-  const [hydrated, setHydrated] = useState(false);
+// --- Singleton ---
+type Listener = () => void;
+let currentSession: Session | null = null;
+const listeners = new Set<Listener>();
 
-  useEffect(() => {
-    // Limpiar la key vieja de localStorage (v1) para no acumular basura
-    // de la versión anterior que sí persistía.
-    try {
-      window.localStorage.removeItem("portfolio:auth:session:v1");
-    } catch {
-      // ignorar
-    }
+function setSession(next: Session | null) {
+  currentSession = next;
+  listeners.forEach((l) => l());
+}
 
-    setSession(getSession());
-    setHydrated(true);
+function subscribe(l: Listener) {
+  listeners.add(l);
+  return () => {
+    listeners.delete(l);
+  };
+}
 
-    // Sincronizar logout/login entre pestañas (sessionStorage también dispara storage event).
-    const onStorage = (e: StorageEvent) => {
+function getSnapshot(): Session | null {
+  return currentSession;
+}
+
+let initialized = false;
+function ensureInit() {
+  if (initialized) return;
+  initialized = true;
+  currentSession = getSession();
+  if (typeof window !== "undefined") {
+    // Sincronizar entre pestañas.
+    window.addEventListener("storage", (e) => {
       if (e.key === "portfolio:auth:session:v2") {
         setSession(getSession());
       }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    });
+  }
+}
+
+// --- Hook público ---
+export function useAuth() {
+  // Hidratación inicial (client-only).
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    ensureInit();
+    setHydrated(true);
   }, []);
 
+  // useSyncExternalStore: re-renderiza a todos los consumidores cuando
+  // el singleton cambia, sin importar en qué componente estén.
+  const session = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+
   const login = useCallback((username: string, password: string): boolean => {
+    ensureInit();
     if (!validateCredentials(username, password)) return false;
     const next: Session = { username, loggedInAt: Date.now() };
     persistSession(next);
@@ -49,6 +80,7 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(() => {
+    ensureInit();
     clearSession();
     setSession(null);
   }, []);

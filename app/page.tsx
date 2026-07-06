@@ -4,6 +4,7 @@ import dynamic from "next/dynamic"
 import BinaryRain from "./components/BinaryRain"
 import Navbar from "./components/Navbar"
 import LangFade from "./components/LangFade"
+import ToastHost from "./components/ToastHost"
 import { useState, useEffect, useCallback } from "react"
 import { useAuth } from "./hooks/useAuth"
 
@@ -95,6 +96,9 @@ export default function Home() {
     <>
       {/* Componente de fondo con efecto de lluvia de código binario */}
       <BinaryRain />
+
+      {/* Toasts globales (login/logout/proyectos) */}
+      <ToastHost />
 
       <main
         className="bg-[#0A0A0A]/40 text-white overflow-hidden relative min-h-screen"

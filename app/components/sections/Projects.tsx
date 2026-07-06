@@ -9,6 +9,7 @@ import { projectsCopy } from "../../i18n/sections";
 import type { Project, ProjectInput } from "../../types/projects";
 import EditFab from "../EditFab";
 import ProjectEditorModal from "../ProjectEditorModal";
+import { showToast } from "../../lib/toast";
 
 const VISIBLE_PER_PAGE = 6; // 3 cols × 2 filas
 
@@ -277,22 +278,27 @@ export default function Projects({
   const handleSave = (input: ProjectInput) => {
     if (editing) {
       update(editing.id, input);
+      showToast("success", "Proyecto actualizado");
     } else {
       add(input);
+      showToast("success", "Proyecto agregado");
     }
     setEditorOpen(false);
     setEditing(null);
   };
 
   const handleDelete = (id: string) => {
+    const target = projects.find((p) => p.id === id);
     remove(id);
     setEditorOpen(false);
     setEditing(null);
+    showToast("success", `Proyecto "${target?.title ?? "eliminado"}" eliminado`);
   };
 
   const handleReset = () => {
     if (confirm("¿Restablecer los proyectos a los valores por defecto? Se perderán los cambios.")) {
       reset();
+      showToast("info", "Proyectos restablecidos");
     }
   };
 
