@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import type { Project, ProjectInput } from "../types/projects";
+import type { ProjectInput } from "../types/projects";
 import {
   loadProjects,
   saveProjects,

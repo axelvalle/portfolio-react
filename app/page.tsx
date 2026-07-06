@@ -1,7 +1,6 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import Image from "next/image"
 import BinaryRain from "./components/BinaryRain"
 import Navbar from "./components/Navbar"
 import LangFade from "./components/LangFade"
@@ -148,20 +147,6 @@ export default function Home() {
  * Grid de iconos de tecnologías (sigue dentro de page.tsx para mantener
  * proximidad con la sección technologies y porque es muy liviano).
  */
-import {
-  SiTypescript,
-  SiHtml5,
-  SiCss3,
-  SiDart,
-  SiFlutter,
-  SiPhp,
-  SiAngular,
-  SiGit,
-  SiMysql,
-  SiPython,
-  SiPostgresql,
-  SiNetlify,
-} from "react-icons/si"
 import { useFadeInOnScroll } from "./hooks/useFadeInOnScroll"
 import { techSectionCopy } from "./i18n/tech"
 
