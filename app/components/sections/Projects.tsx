@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useFadeInOnScroll } from "../../hooks/useFadeInOnScroll";
 import { useProjects } from "../../hooks/useProjects";
 import { FaGithub, FaChevronLeft, FaChevronRight, FaEdit } from "../../icons";
 import { projectIcons, techIcons } from "../../iconRegistry";
@@ -31,9 +30,14 @@ function ProjectCard({
   const Icon = projectIcons[project.iconKey];
   const t = projectsCopy.en; // "Github" label es igual en ambos idiomas en este copy
 
+  // Si visible=true y aún no estaba observada, usar animación inmediata
+  // (corre una vez al mount). Si el padre quiere control por observer,
+  // pasa visible como dinámico y se usa la clase .visible normal.
+  const fadeClass = visible ? "fade-up-immediate" : "fade-up";
+
   return (
     <div
-      className={`group relative rounded-2xl shadow-lg p-6 flex flex-col items-center fade-up transition-transform duration-300 hover:-translate-y-1${
+      className={`group relative rounded-2xl shadow-lg p-6 flex flex-col items-center ${fadeClass} transition-transform duration-300 hover:-translate-y-1${
         visible ? " visible" : ""
       } ${project.comingSoon ? "bg-gradient-to-br from-[#FF8C1A]/80 to-[#23272f]/90" : "bg-[#181818]/90"}`}
     >
@@ -256,9 +260,6 @@ export default function Projects({
   const { projects, add, update, remove, reset } = useProjects(lang);
   const t = projectsCopy[lang];
 
-  // Solo para fade-up de las primeras 6 cards en el modo grid estático.
-  const gridVisible = useFadeInOnScroll("project-card", VISIBLE_PER_PAGE);
-
   const hasOverflow = projects.length > VISIBLE_PER_PAGE;
 
   // Estado del modal editor.
@@ -347,7 +348,7 @@ export default function Projects({
             <div key={project.id} id={`project-card-${i}`}>
               <ProjectCard
                 project={project}
-                visible={gridVisible[i] ?? false}
+                visible={true}
                 canEdit={isAuthenticated}
                 onEdit={handleEdit}
               />

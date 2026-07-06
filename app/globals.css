@@ -176,7 +176,9 @@ body {
   scroll-snap-align: start;
 }
 
-/* Fade-up: transición, no animation — para que al re-entrar al viewport no reinicie. */
+/* Fade-up: transición, no animation — para que al re-entrar al viewport no reinicie.
+ * Las cards nuevas se marcan con `visible` desde el render inicial para que
+ * no queden con opacity:0 si el observer aún no las detectó. */
 .fade-up {
   opacity: 0;
   transform: translateY(30px);
@@ -185,6 +187,23 @@ body {
 .fade-up.visible {
   opacity: 1;
   transform: translateY(0);
+}
+/* Variante "inmediata": corre la animación una vez al mount sin esperar observer.
+ * Usado por cards que ya estaban o que acaban de agregarse. */
+@keyframes fadeUpOnce {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up-immediate {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUpOnce 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Mobile menu: animación pulida con translateY en lugar de max-h estirado. */
