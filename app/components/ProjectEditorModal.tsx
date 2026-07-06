@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaTimes, FaTrash, FaPlus, FaGlobe } from "react-icons/fa";
-import type { Project, ProjectInput, TechBadge, ProjectIconKey } from "../types/projects";
+import { FaTimes, FaTrash, FaPlus, FaGlobe, FaLanguage } from "react-icons/fa";
+import type { Project, ProjectInput, TechBadge, ProjectIconKey, LocalizedText } from "../types/projects";
 import { projectIcons } from "../iconRegistry";
+import { translateText } from "../lib/translate";
 
 const ICON_KEYS: ProjectIconKey[] = ["medical", "mobile", "brush", "university"];
 
-type Draft = Omit<ProjectInput, "techs"> & { techs: TechBadge[] };
-
-/** Opciones del selector de idioma (3-opciones explícito, sin string vacío). */
 type LangOption = "es" | "en" | "both";
 
 function optionToTargetLangs(opt: LangOption): ("en" | "es")[] {
@@ -23,11 +21,19 @@ function targetLangsToOption(target: ("en" | "es")[]): LangOption {
   return "en";
 }
 
+const EMPTY_TEXT: LocalizedText = { en: "", es: "" };
+
+type Draft = Omit<ProjectInput, "techs" | "title" | "desc"> & {
+  title: LocalizedText;
+  desc: LocalizedText;
+  techs: TechBadge[];
+};
+
 function emptyDraft(currentLang: "en" | "es"): Draft {
   return {
     iconKey: "mobile",
-    title: "",
-    desc: "",
+    title: { ...EMPTY_TEXT },
+    desc: { ...EMPTY_TEXT },
     techs: [],
     githubUrl: "",
     comingSoon: false,
@@ -54,8 +60,8 @@ export default function ProjectEditorModal({
     initial
       ? {
           iconKey: initial.iconKey,
-          title: initial.title,
-          desc: initial.desc,
+          title: { ...initial.title },
+          desc: { ...initial.desc },
           techs: initial.techs,
           githubUrl: initial.githubUrl,
           comingSoon: initial.comingSoon ?? false,
@@ -64,18 +70,16 @@ export default function ProjectEditorModal({
       : emptyDraft(lang),
   );
   const [error, setError] = useState<string | null>(null);
+  const [translating, setTranslating] = useState<null | "es->en" | "en->es">(null);
 
-  // Reset al abrir/cambiar initial.
-  // Importante: NO depende de `lang`. Si depende, un cross-fade de idioma
-  // mientras el modal está cerrado reescribiría el draft a vacío.
   useEffect(() => {
     if (open) {
       setDraft(
         initial
           ? {
               iconKey: initial.iconKey,
-              title: initial.title,
-              desc: initial.desc,
+              title: { ...initial.title },
+              desc: { ...initial.desc },
               techs: initial.techs,
               githubUrl: initial.githubUrl,
               comingSoon: initial.comingSoon ?? false,
@@ -84,11 +88,11 @@ export default function ProjectEditorModal({
           : emptyDraft(lang),
       );
       setError(null);
+      setTranslating(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initial?.id]);
 
-  // Esc para cerrar.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -102,6 +106,57 @@ export default function ProjectEditorModal({
 
   const updateField = <K extends keyof Draft>(key: K, value: Draft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
+  };
+
+  const updateText = (
+    field: "title" | "desc",
+    langKey: "en" | "es",
+    value: string,
+  ) => {
+    setDraft((d) => ({
+      ...d,
+      [field]: { ...d[field], [langKey]: value },
+    }));
+  };
+
+  /**
+   * Traduce el par title/desc de un idioma al otro.
+   * Elige el idioma fuente según cuál tenga más contenido.
+   */
+  const handleTranslate = async (direction: "es->en" | "en->es") => {
+    setError(null);
+    const source = direction === "es->en" ? "es" : "en";
+    const target = direction === "es->en" ? "en" : "es";
+    const sourceTitle = draft.title[source].trim();
+    const sourceDesc = draft.desc[source].trim();
+    if (!sourceTitle && !sourceDesc) {
+      setError(`Primero escribe el título y descripción en ${source.toUpperCase()}.`);
+      return;
+    }
+    setTranslating(direction);
+    try {
+      const [newTitle, newDesc] = await Promise.all([
+        sourceTitle
+          ? translateText(sourceTitle, source, target)
+          : Promise.resolve(""),
+        sourceDesc
+          ? translateText(sourceDesc, source, target)
+          : Promise.resolve(""),
+      ]);
+      setDraft((d) => ({
+        ...d,
+        title: { ...d.title, [target]: newTitle || d.title[target] },
+        desc: { ...d.desc, [target]: newDesc || d.desc[target] },
+      }));
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `No se pudo traducir: ${err.message}`
+          : "No se pudo traducir. Revisa tu conexión.",
+      );
+    } finally {
+      setTranslating(null);
+    }
   };
 
   const addTech = () => {
@@ -126,32 +181,32 @@ export default function ProjectEditorModal({
     e.preventDefault();
     setError(null);
 
-    if (!draft.title.trim()) {
-      setError("El título es obligatorio.");
-      return;
-    }
-    if (!draft.desc.trim()) {
-      setError("La descripción es obligatoria.");
-      return;
-    }
-    if (!draft.comingSoon && draft.githubUrl && !/^https?:\/\//.test(draft.githubUrl)) {
-      setError("La URL de GitHub debe empezar con http(s)://");
+    // Validar que al menos un idioma tenga título y descripción.
+    const langs: ("en" | "es")[] = ["en", "es"];
+    const hasContent = langs.some(
+      (l) => draft.title[l].trim() !== "" && draft.desc[l].trim() !== "",
+    );
+    if (!hasContent) {
+      setError("El título y la descripción son obligatorios en al menos un idioma.");
       return;
     }
 
-    // Limpiar techs vacíos.
-    const cleanTechs = draft.techs.filter((t) => t.name.trim() !== "");
-
-    // Validar que targetLangs tenga al menos un idioma.
     if (draft.targetLangs.length === 0) {
       setError("Selecciona al menos un idioma para el proyecto.");
       return;
     }
 
+    if (!draft.comingSoon && draft.githubUrl && !/^https?:\/\//.test(draft.githubUrl)) {
+      setError("La URL de GitHub debe empezar con http(s)://");
+      return;
+    }
+
+    const cleanTechs = draft.techs.filter((t) => t.name.trim() !== "");
+
     onSave({
       iconKey: draft.iconKey,
-      title: draft.title.trim(),
-      desc: draft.desc.trim(),
+      title: { en: draft.title.en.trim(), es: draft.title.es.trim() },
+      desc: { en: draft.desc.en.trim(), es: draft.desc.es.trim() },
       techs: cleanTechs,
       githubUrl: draft.githubUrl.trim(),
       comingSoon: draft.comingSoon,
@@ -161,6 +216,8 @@ export default function ProjectEditorModal({
 
   const isEdit = Boolean(initial);
   const IconPreview = projectIcons[draft.iconKey];
+  const hasEs = draft.title.es.trim() !== "" && draft.desc.es.trim() !== "";
+  const hasEn = draft.title.en.trim() !== "" && draft.desc.en.trim() !== "";
 
   return (
     <div
@@ -177,7 +234,7 @@ export default function ProjectEditorModal({
       />
 
       <div
-        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#181818]/95 backdrop-blur-md rounded-2xl border border-[#FF8C1A]/30 shadow-2xl p-6 sm:p-7 animate-fade-float"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#181818]/95 backdrop-blur-md rounded-2xl border border-[#FF8C1A]/30 shadow-2xl p-6 sm:p-7 animate-fade-float"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -196,13 +253,11 @@ export default function ProjectEditorModal({
           {isEdit ? "Editar proyecto" : "Nuevo proyecto"}
         </h2>
         <p className="text-sm text-[#DCDCDC] mb-5">
-          {isEdit
-            ? "Modifica los datos del proyecto."
-            : "Completa los datos del nuevo proyecto."}
+          Llena los campos en al menos un idioma. Usa el botón de auto-traducción para completar el otro.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          {/* Selector de idioma: ¿en qué idiomas aparece este proyecto? */}
+          {/* Selector de idioma del proyecto */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-[#F3F3F3] mb-2">
               <FaGlobe className="text-[#FF8C1A]" /> Idiomas en los que aparece
@@ -268,37 +323,91 @@ export default function ProjectEditorModal({
             </div>
           </div>
 
-          {/* Título */}
-          <div>
-            <label htmlFor="pe-title" className="block text-sm font-medium text-[#F3F3F3] mb-1">
-              Título
-            </label>
-            <input
-              id="pe-title"
-              type="text"
-              value={draft.title}
-              onChange={(e) => updateField("title", e.target.value)}
-              placeholder='ej. "StockFlow Mama Pola"'
-              className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition"
-              required
-            />
-          </div>
+          {/* Título + Descripción: campos en ES */}
+          <fieldset className="rounded-xl border border-[#FF8C1A]/20 p-4 space-y-3">
+            <legend className="px-2 text-xs font-semibold text-[#FF8C1A]">🇪🇸 Español</legend>
 
-          {/* Descripción */}
-          <div>
-            <label htmlFor="pe-desc" className="block text-sm font-medium text-[#F3F3F3] mb-1">
-              Descripción
-            </label>
-            <textarea
-              id="pe-desc"
-              value={draft.desc}
-              onChange={(e) => updateField("desc", e.target.value)}
-              rows={3}
-              placeholder="Mobile inventory and statistics app for small businesses."
-              className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition resize-none"
-              required
-            />
-          </div>
+            <div>
+              <label htmlFor="pe-title-es" className="block text-sm font-medium text-[#F3F3F3] mb-1">
+                Título (ES)
+              </label>
+              <input
+                id="pe-title-es"
+                type="text"
+                value={draft.title.es}
+                onChange={(e) => updateText("title", "es", e.target.value)}
+                placeholder='ej. "StockFlow Mama Pola"'
+                className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="pe-desc-es" className="block text-sm font-medium text-[#F3F3F3] mb-1">
+                Descripción (ES)
+              </label>
+              <textarea
+                id="pe-desc-es"
+                value={draft.desc.es}
+                onChange={(e) => updateText("desc", "es", e.target.value)}
+                rows={3}
+                placeholder="App móvil de inventario..."
+                className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition resize-none"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleTranslate("es->en")}
+              disabled={translating !== null || !hasEs}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#FF8C1A]/10 border border-[#FF8C1A]/30 text-[#FF8C1A] text-sm font-medium hover:bg-[#FF8C1A]/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            >
+              <FaLanguage />
+              {translating === "es->en" ? "Traduciendo..." : "Traducir al inglés"}
+            </button>
+          </fieldset>
+
+          {/* Título + Descripción: campos en EN */}
+          <fieldset className="rounded-xl border border-[#FF8C1A]/20 p-4 space-y-3">
+            <legend className="px-2 text-xs font-semibold text-[#FF8C1A]">🇺🇸 English</legend>
+
+            <div>
+              <label htmlFor="pe-title-en" className="block text-sm font-medium text-[#F3F3F3] mb-1">
+                Title (EN)
+              </label>
+              <input
+                id="pe-title-en"
+                type="text"
+                value={draft.title.en}
+                onChange={(e) => updateText("title", "en", e.target.value)}
+                placeholder='e.g. "StockFlow Mama Pola"'
+                className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="pe-desc-en" className="block text-sm font-medium text-[#F3F3F3] mb-1">
+                Description (EN)
+              </label>
+              <textarea
+                id="pe-desc-en"
+                value={draft.desc.en}
+                onChange={(e) => updateText("desc", "en", e.target.value)}
+                rows={3}
+                placeholder="Mobile inventory app..."
+                className="w-full px-3 py-2 rounded-lg bg-[#0A0A0A]/80 text-white placeholder-[#777] border border-[#FF8C1A]/20 focus:border-[#FF8C1A] focus:outline-none focus:ring-1 focus:ring-[#FF8C1A] transition resize-none"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleTranslate("en->es")}
+              disabled={translating !== null || !hasEn}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#FF8C1A]/10 border border-[#FF8C1A]/30 text-[#FF8C1A] text-sm font-medium hover:bg-[#FF8C1A]/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            >
+              <FaLanguage />
+              {translating === "en->es" ? "Traduciendo..." : "Translate to Spanish"}
+            </button>
+          </fieldset>
 
           {/* URL GitHub */}
           <div>
@@ -389,7 +498,7 @@ export default function ProjectEditorModal({
                 <button
                   type="button"
                   onClick={() => {
-                    if (confirm(`¿Eliminar "${initial.title}"?`)) {
+                    if (confirm(`¿Eliminar "${initial.title.es || initial.title.en}"?`)) {
                       onDelete(initial.id);
                     }
                   }}

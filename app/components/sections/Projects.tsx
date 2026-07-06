@@ -21,18 +21,22 @@ function ProjectCard({
   visible,
   canEdit = false,
   onEdit,
+  lang,
 }: {
   project: Project;
   visible: boolean;
   canEdit?: boolean;
   onEdit?: (project: Project) => void;
+  lang: "en" | "es";
 }) {
   const Icon = projectIcons[project.iconKey];
-  const t = projectsCopy.en; // "Github" label es igual en ambos idiomas en este copy
+  const t = projectsCopy[lang]; // "Github" label traducido
 
-  // Si visible=true y aún no estaba observada, usar animación inmediata
-  // (corre una vez al mount). Si el padre quiere control por observer,
-  // pasa visible como dinámico y se usa la clase .visible normal.
+  // Texto localizado al idioma actual. Si el idioma destino está vacío,
+  // cae al otro idioma (graceful degradation).
+  const titleText = project.title[lang] || project.title[lang === "en" ? "es" : "en"];
+  const descText = project.desc[lang] || project.desc[lang === "en" ? "es" : "en"];
+
   const fadeClass = visible ? "fade-up-immediate" : "fade-up";
 
   return (
@@ -45,7 +49,7 @@ function ProjectCard({
         <button
           type="button"
           onClick={() => onEdit(project)}
-          aria-label={`Editar ${project.title}`}
+          aria-label={`Editar ${titleText}`}
           className="absolute top-2 right-2 p-2 rounded-full bg-[#0A0A0A]/80 text-[#FF8C1A] border border-[#FF8C1A]/30 opacity-70 hover:opacity-100 hover:bg-[#FF8C1A] hover:text-black transition-all"
         >
           <FaEdit size={14} />
@@ -57,13 +61,13 @@ function ProjectCard({
           className={`mb-4 ${project.comingSoon ? "text-[#FF8C1A] transition-transform duration-300 group-hover:scale-110" : "text-[#25c6f9]"}`}
         />
       )}
-      <h3 className="text-xl font-bold text-white mb-1 text-center">{project.title}</h3>
+      <h3 className="text-xl font-bold text-white mb-1 text-center">{titleText}</h3>
       <p
         className={`text-center mb-3 ${
           project.comingSoon ? "text-[#FFE7B0] font-semibold text-lg" : "text-[#DCDCDC]"
         }`}
       >
-        {project.desc}
+        {descText}
       </p>
 
       <div className="flex flex-wrap gap-2 justify-center mb-4">
@@ -112,10 +116,12 @@ function ProjectsCarousel({
   projects,
   canEdit,
   onEdit,
+  lang,
 }: {
   projects: Project[];
   canEdit: boolean;
   onEdit: (project: Project) => void;
+  lang: "en" | "es";
 }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(0);
@@ -189,6 +195,7 @@ function ProjectsCarousel({
                   visible={true}
                   canEdit={canEdit}
                   onEdit={onEdit}
+                  lang={lang}
                 />
               ))}
               {/* Si la última página tiene menos de 6, rellenamos con invisibles para mantener el grid 3x2 */}
@@ -341,17 +348,18 @@ export default function Projects({
       </div>
 
       {hasOverflow ? (
-        <ProjectsCarousel projects={projects} canEdit={isAuthenticated} onEdit={handleEdit} />
+        <ProjectsCarousel projects={projects} canEdit={isAuthenticated} onEdit={handleEdit} lang={lang} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
           {projects.map((project, i) => (
             <div key={project.id} id={`project-card-${i}`}>
-              <ProjectCard
-                project={project}
-                visible={true}
-                canEdit={isAuthenticated}
-                onEdit={handleEdit}
-              />
+<ProjectCard
+              project={project}
+              visible={true}
+              canEdit={isAuthenticated}
+              onEdit={handleEdit}
+              lang={lang}
+            />
             </div>
           ))}
           {/* Mantener el grid 3×2 aunque haya <6 */}

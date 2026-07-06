@@ -118,12 +118,20 @@ import type { Project } from "../types/projects";
 
 export type DefaultProject = Omit<Project, "id">;
 
+/**
+ * Defaults de proyectos. Solo `en` tiene los defaults reales — `es` queda
+ * vacío porque cada default ya incluye title/desc en ambos idiomas.
+ * `buildDefaults()` en projectsStorage.ts toma únicamente `defaultProjects.en`.
+ */
 export const defaultProjects: Record<Lang, DefaultProject[]> = {
   en: [
     {
       iconKey: "medical",
-      title: "WIMAX Medical Center",
-      desc: "Vaccination management system using SQL Server, C# and .NET Framework.",
+      title: { en: "WIMAX Medical Center", es: "WIMAX Centro Médico" },
+      desc: {
+        en: "Vaccination management system using SQL Server, C# and .NET Framework.",
+        es: "Sistema de gestión de vacunación usando SQL Server, C# y .NET Framework.",
+      },
       techs: [
         { name: "SQL Server", color: "#23272f", iconKey: "sqlserver" },
         { name: "C#", color: "#178600", iconKey: "dotnet" },
@@ -134,8 +142,11 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
     },
     {
       iconKey: "mobile",
-      title: '"StockFlow Mama Pola"',
-      desc: "Mobile inventory and statistics app for small businesses.",
+      title: { en: '"StockFlow Mama Pola"', es: '"StockFlow Mama Pola"' },
+      desc: {
+        en: "Mobile inventory and statistics app for small businesses.",
+        es: "App móvil de inventario y estadísticas para pequeños negocios.",
+      },
       techs: [
         { name: "Flutter", color: "#02569b", iconKey: "flutter" },
         { name: "Dart", color: "#0175c2", iconKey: "dart" },
@@ -145,8 +156,8 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
     },
     {
       iconKey: "brush",
-      title: '"Yaleli Creations"',
-      desc: "Coming soon...",
+      title: { en: '"Yaleli Creations"', es: '"Yaleli Creations"' },
+      desc: { en: "Coming soon...", es: "Próximamente..." },
       techs: [
         { name: "HTML", color: "#e34c26", iconKey: "html" },
         { name: "CSS", color: "#1572b6", iconKey: "css" },
@@ -159,8 +170,14 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
     },
     {
       iconKey: "university",
-      title: '"Administración de Empresas"',
-      desc: "Desktop application in Java for business management: products, suppliers and payroll.",
+      title: {
+        en: '"Business Administration"',
+        es: '"Administración de Empresas"',
+      },
+      desc: {
+        en: "Desktop application in Java for business management: products, suppliers and payroll.",
+        es: "Aplicación de escritorio en Java para gestión administrativa: productos, proveedores y planillas.",
+      },
       techs: [
         { name: "Java", color: "#3178c6", iconKey: "java" },
         { name: "Swing", color: "#FF8C1A" },
@@ -170,57 +187,7 @@ export const defaultProjects: Record<Lang, DefaultProject[]> = {
       targetLangs: ["en", "es"],
     },
   ],
-  es: [
-    {
-      iconKey: "medical",
-      title: "WIMAX Centro Médico",
-      desc: "Sistema de gestión de vacunación usando SQL Server, C# y .NET Framework.",
-      techs: [
-        { name: "SQL Server", color: "#23272f", iconKey: "sqlserver" },
-        { name: "C#", color: "#178600", iconKey: "dotnet" },
-        { name: ".NET Framework", color: "#512BD4", iconKey: "dotnet" },
-      ],
-      githubUrl: "https://github.com/axelvalle/FINALWIMAX",
-      targetLangs: ["en", "es"],
-    },
-    {
-      iconKey: "mobile",
-      title: '"StockFlow Mama Pola"',
-      desc: "App móvil de inventario y estadísticas para pequeños negocios.",
-      techs: [
-        { name: "Flutter", color: "#02569b", iconKey: "flutter" },
-        { name: "Dart", color: "#0175c2", iconKey: "dart" },
-      ],
-      githubUrl: "https://github.com/axelvalle/stockflow-mama-pola",
-      targetLangs: ["en", "es"],
-    },
-    {
-      iconKey: "brush",
-      title: '"Yaleli Creations"',
-      desc: "Próximamente...",
-      techs: [
-        { name: "HTML", color: "#e34c26", iconKey: "html" },
-        { name: "CSS", color: "#1572b6", iconKey: "css" },
-        { name: "TS", color: "#3178c6", iconKey: "typescript" },
-        { name: "Angular", color: "#dd0031", iconKey: "angular" },
-      ],
-      githubUrl: "",
-      comingSoon: true,
-      targetLangs: ["en", "es"],
-    },
-    {
-      iconKey: "university",
-      title: '"Administración de Empresas"',
-      desc: "Aplicación de escritorio en Java para gestión administrativa: productos, proveedores y planillas.",
-      techs: [
-        { name: "Java", color: "#3178c6", iconKey: "java" },
-        { name: "Swing", color: "#FF8C1A" },
-        { name: "Archivos de texto", color: "#23272f" },
-      ],
-      githubUrl: "https://github.com/axelvalle/Administracion_Empresas",
-      targetLangs: ["en", "es"],
-    },
-  ],
+  es: [],
 };
 
 export const certificationsCopy = {
