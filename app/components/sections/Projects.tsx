@@ -380,7 +380,6 @@ export default function Projects({
         onSave={handleSave}
         onDelete={handleDelete}
         initial={editing}
-        lang={lang}
       />
     </section>
   );

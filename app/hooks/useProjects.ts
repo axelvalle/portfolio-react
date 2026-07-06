@@ -40,7 +40,13 @@ export function useProjects(lang: "en" | "es") {
   }, []);
 
   // Filtrar proyectos visibles en el idioma activo.
-  const projects = store.filter((p) => p.targetLangs.includes(lang));
+  // Un proyecto aparece en un idioma si su title Y desc están no vacíos en ese idioma.
+  // (targetLangs en el storage se ignora: ahora se deriva del contenido.)
+  const projects = store.filter((p) => {
+    const text = (p.title[lang] ?? "").trim();
+    const desc = (p.desc[lang] ?? "").trim();
+    return text !== "" && desc !== "";
+  });
 
   const add = useCallback((input: ProjectInput) => {
     const id = crypto.randomUUID();

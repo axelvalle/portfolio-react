@@ -1,35 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaTimes, FaTrash, FaPlus, FaGlobe, FaLanguage } from "react-icons/fa";
+import { FaTimes, FaTrash, FaPlus, FaLanguage } from "react-icons/fa";
 import type { Project, ProjectInput, TechBadge, ProjectIconKey, LocalizedText } from "../types/projects";
 import { projectIcons } from "../iconRegistry";
 import { translateText } from "../lib/translate";
 
 const ICON_KEYS: ProjectIconKey[] = ["medical", "mobile", "brush", "university"];
 
-type LangOption = "es" | "en" | "both";
-
-function optionToTargetLangs(opt: LangOption): ("en" | "es")[] {
-  if (opt === "both") return ["en", "es"];
-  return [opt];
-}
-
-function targetLangsToOption(target: ("en" | "es")[]): LangOption {
-  if (target.includes("en") && target.includes("es")) return "both";
-  if (target.includes("es")) return "es";
-  return "en";
-}
-
 const EMPTY_TEXT: LocalizedText = { en: "", es: "" };
 
-type Draft = Omit<ProjectInput, "techs" | "title" | "desc"> & {
+type Draft = Omit<ProjectInput, "techs" | "title" | "desc" | "targetLangs"> & {
   title: LocalizedText;
   desc: LocalizedText;
   techs: TechBadge[];
 };
 
-function emptyDraft(currentLang: "en" | "es"): Draft {
+function emptyDraft(): Draft {
   return {
     iconKey: "mobile",
     title: { ...EMPTY_TEXT },
@@ -37,7 +24,6 @@ function emptyDraft(currentLang: "en" | "es"): Draft {
     techs: [],
     githubUrl: "",
     comingSoon: false,
-    targetLangs: optionToTargetLangs(currentLang),
   };
 }
 
@@ -47,14 +33,12 @@ export default function ProjectEditorModal({
   onSave,
   onDelete,
   initial,
-  lang,
 }: {
   open: boolean;
   onClose: () => void;
   onSave: (input: ProjectInput) => void;
   onDelete?: (id: string) => void;
   initial?: Project | null;
-  lang: "en" | "es";
 }) {
   const [draft, setDraft] = useState<Draft>(() =>
     initial
@@ -65,9 +49,8 @@ export default function ProjectEditorModal({
           techs: initial.techs,
           githubUrl: initial.githubUrl,
           comingSoon: initial.comingSoon ?? false,
-          targetLangs: initial.targetLangs,
         }
-      : emptyDraft(lang),
+      : emptyDraft(),
   );
   const [error, setError] = useState<string | null>(null);
   const [translating, setTranslating] = useState<null | "es->en" | "en->es">(null);
@@ -83,9 +66,8 @@ export default function ProjectEditorModal({
               techs: initial.techs,
               githubUrl: initial.githubUrl,
               comingSoon: initial.comingSoon ?? false,
-              targetLangs: initial.targetLangs,
             }
-          : emptyDraft(lang),
+: emptyDraft(),
       );
       setError(null);
       setTranslating(null);
@@ -191,17 +173,18 @@ export default function ProjectEditorModal({
       return;
     }
 
-    if (draft.targetLangs.length === 0) {
-      setError("Selecciona al menos un idioma para el proyecto.");
-      return;
-    }
-
     if (!draft.comingSoon && draft.githubUrl && !/^https?:\/\//.test(draft.githubUrl)) {
       setError("La URL de GitHub debe empezar con http(s)://");
       return;
     }
 
     const cleanTechs = draft.techs.filter((t) => t.name.trim() !== "");
+
+    // Derivar targetLangs automáticamente del contenido: aparece en un idioma
+    // solo si title y desc están no vacíos en ese idioma.
+    const derived: ("en" | "es")[] = [];
+    if (draft.title.en.trim() && draft.desc.en.trim()) derived.push("en");
+    if (draft.title.es.trim() && draft.desc.es.trim()) derived.push("es");
 
     onSave({
       iconKey: draft.iconKey,
@@ -210,7 +193,7 @@ export default function ProjectEditorModal({
       techs: cleanTechs,
       githubUrl: draft.githubUrl.trim(),
       comingSoon: draft.comingSoon,
-      targetLangs: draft.targetLangs,
+      targetLangs: derived,
     });
   };
 
@@ -257,40 +240,6 @@ export default function ProjectEditorModal({
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          {/* Selector de idioma del proyecto */}
-          <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-[#F3F3F3] mb-2">
-              <FaGlobe className="text-[#FF8C1A]" /> Idiomas en los que aparece
-            </label>
-            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Idiomas del proyecto">
-              {([
-                { value: "es" as const, label: "Español" },
-                { value: "en" as const, label: "English" },
-                { value: "both" as const, label: "Ambos" },
-              ]).map((opt) => {
-                const active = targetLangsToOption(draft.targetLangs) === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() =>
-                      updateField("targetLangs", optionToTargetLangs(opt.value))
-                    }
-                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-all ${
-                      active
-                        ? "border-[#FF8C1A] bg-[#FF8C1A]/10 text-[#FF8C1A]"
-                        : "border-[#FF8C1A]/20 hover:border-[#FF8C1A]/50 bg-[#0A0A0A]/60 text-[#DCDCDC]"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Icono */}
           <div>
             <label className="block text-sm font-medium text-[#F3F3F3] mb-2">Icono</label>
